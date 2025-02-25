@@ -2,5 +2,14 @@ package model.player;
 import model.Colour;
 
 public class Marble {
-	final Colour colour = null;
+	private final Colour colour;
+	//DON'T FORGET TO ASSOCIATE WITH PLAYER
+
+	public Marble(Colour colour) {
+		this.colour = colour ;
+	}
+	public Colour getColour() {
+		return colour;
+	}
+	
 }
