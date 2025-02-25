@@ -1,9 +1,5 @@
 package model.card;
 
-public class Card {
-
-<<<<<<< Updated upstream
-=======
 public abstract class Card{
 	private final String name;
 	private final String description;
@@ -44,6 +40,4 @@ public abstract class Card{
 	public String getDescription() {
 		return description;
 	}
-	
->>>>>>> Stashed changes
 }
