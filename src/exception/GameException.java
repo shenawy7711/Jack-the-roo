@@ -1,5 +1,10 @@
 package exception;
 
-public class GameException {
-
+public abstract class GameException extends Exception{
+	public GameException() {
+		super();
+	}
+	public GameException(String message) {
+		super(message);
+	}
 }
