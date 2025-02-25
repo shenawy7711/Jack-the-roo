@@ -10,7 +10,7 @@ public abstract class Card{
 	private final String description;
 	protected BoardManager boardManager;
 	protected GameManager gameManager;
-	
+	//MAKE THE SUBCLASSES ---> STANDARD AND WILD	
 	public Card(String name, String description, BoardManager boardManager, GameManager gameManager) {
 		super();
 		this.name = name;
