@@ -1,5 +1,8 @@
 package model.player;
 
-public class Marble {
+import model.Colour;
 
+public class Marble {
+	final Colour colour = null;
+	
 }
