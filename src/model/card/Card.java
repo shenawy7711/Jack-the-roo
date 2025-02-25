@@ -1,14 +1,16 @@
 package model.card;
 
+import engine.Game;
+import engine.GameManager;
+import engine.board.Board;
+import engine.board.BoardManager;
+
 public abstract class Card{
 	private final String name;
 	private final String description;
 	protected BoardManager boardManager;
 	protected GameManager gameManager;
-	
-	//SUBCLASSES ARE NOT DONE PLEASE READ THE CARD 
-	//CLASS TO MAKE THE SUBCLASSES STANDARD AND WILD.
-	
+	//MAKE THE SUBCLASSES ---> STANDARD AND WILD	
 	public Card(String name, String description, BoardManager boardManager, GameManager gameManager) {
 		super();
 		this.name = name;
@@ -40,4 +42,5 @@ public abstract class Card{
 	public String getDescription() {
 		return description;
 	}
+	
 }
