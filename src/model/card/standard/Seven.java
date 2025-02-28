@@ -1,0 +1,11 @@
+package model.card.standard;
+
+import model.card.*;
+import engine.GameManager;
+import engine.board.BoardManager;
+
+public class Seven extends Standard{//rank 7
+	public Seven(String name, String description, Suit suit, BoardManager boardManager, GameManager gameManager) {
+		super(name, description,7,suit, boardManager, gameManager);
+	}
+}

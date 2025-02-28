@@ -5,7 +5,7 @@ import engine.GameManager;
 import engine.board.Board;
 import engine.board.BoardManager;
 
-public abstract class Card{
+abstract public class Card{
 	private final String name;
 	private final String description;
 	protected BoardManager boardManager;
