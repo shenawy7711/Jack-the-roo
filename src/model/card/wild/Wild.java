@@ -1,5 +1,11 @@
 package model.card.wild;
 
-public class Wild {
+import model.card.Card;
+import engine.GameManager;
+import engine.board.BoardManager;
 
+abstract public class Wild extends Card {//wild is a subclass of Card
+	public Wild(String name, String description, BoardManager boardManager, GameManager gameManager) {
+		super(name, description, boardManager, gameManager);
+	}
 }
