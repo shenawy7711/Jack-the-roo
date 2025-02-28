@@ -9,5 +9,33 @@ public class Player {
 	private ArrayList<Marble> marbles;
 	private final Card selectedCard;
 	private ArrayList<Marble> selectedMarbles;
+	public Player(String name, Colour colour) {
+		this.name=name;
+		this.colour=colour;
+		this.hand=new ArrayList<>();
+		this.selectedMarbles=new ArrayList<>();
+		this.marbles=new ArrayList<>();
+		//4.18.2 question not done
+		this.selectedCard=null;
+	}
+
+	public ArrayList<Card> getHand() {
+		return hand;
+	}
+	public void setHand(ArrayList<Card> hand) {
+		this.hand = hand;
+	}
+	public String getName() {
+		return name;
+	}
+	public Colour getColour() {
+		return colour;
+	}
+	public ArrayList<Marble> getMarbles() {
+		return marbles;
+	}
+	public Card getSelectedCard() {
+		return selectedCard;
+	}
 	
 }
