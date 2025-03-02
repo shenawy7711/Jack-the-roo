@@ -4,8 +4,8 @@ import model.card.*;
 import engine.GameManager;
 import engine.board.BoardManager;
 public class Standard extends Card{
-	private int rank;
-	private Suit suit;
+	private final int rank;
+	private final Suit suit;
 	
 	public Standard(String name,String description,int rank,Suit suit,BoardManager boardManager,GameManager gameManager) {
 		super(name, description, boardManager, gameManager);

@@ -1,6 +1,6 @@
 package model.card.standard;
 
-import model.card.*;
+
 import engine.GameManager;
 import engine.board.BoardManager;
 
