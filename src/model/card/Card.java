@@ -15,8 +15,8 @@ abstract public class Card{
 		super();
 		this.name = name;
 		this.description = description;
-		this.boardManager = new Board();
-		this.gameManager = new Game();
+		this.boardManager = boardManager;
+		this.gameManager = gameManager;
 	}
 
 	public BoardManager getBoardManager() {
