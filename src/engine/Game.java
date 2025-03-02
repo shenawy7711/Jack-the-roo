@@ -14,9 +14,7 @@ public class Game implements GameManager{
 	private int currentPlayerIndex;
 	private int turn;
 	public Game(String playerName) throws IOException{
-		//constructer not finished
 		
-
 	}
 	public Board getBoard() {
 		return board;
