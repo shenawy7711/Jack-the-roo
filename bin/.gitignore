@@ -1,3 +1,9 @@
+<<<<<<< Updated upstream
+=======
+/engine/
+/exception/
+>>>>>>> Stashed changes
 /model/
 /engine/
 /test/
+/view/
