@@ -1,8 +1,6 @@
 package model.card;
 
-import engine.Game;
 import engine.GameManager;
-import engine.board.Board;
 import engine.board.BoardManager;
 
 abstract public class Card{
