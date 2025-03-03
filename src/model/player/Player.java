@@ -8,15 +8,17 @@ public class Player {
 	private ArrayList<Card> hand;
 	private ArrayList<Marble> marbles;
 	private final Card selectedCard;
-	private ArrayList<Marble> selectedMarbles;
+	private final ArrayList<Marble> selectedMarbles;
 	public Player(String name, Colour colour) {
 		this.name=name;
 		this.colour=colour;
 		this.hand=new ArrayList<>();
 		this.selectedMarbles=new ArrayList<>();
 		this.marbles=new ArrayList<>();
-		//4.18.2 question not done
 		this.selectedCard=null;
+		for (int i = 0; i < 4; i++) {
+	        this.marbles.add(new Marble(colour));
+	    }
 	}
 
 	public ArrayList<Card> getHand() {
