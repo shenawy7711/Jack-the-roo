@@ -1,10 +1,10 @@
 package exception;
 
-public class SplitOutOfRangeException extends InvalidCardException{
+public class SplitOutOfRangeException extends InvalidSelectionException{
 	public SplitOutOfRangeException() {
 		super();
 	}
-	SplitOutOfRangeException(String message){
+	public SplitOutOfRangeException(String message){
 		super(message);
 	}
 }

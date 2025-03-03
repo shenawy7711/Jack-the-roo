@@ -57,4 +57,7 @@ public class Board implements BoardManager{
 
 	    track.get(index).setTrap(true);
 	}
+	public GameManager getGameManager() {
+		return gameManager;
+	}
 }
