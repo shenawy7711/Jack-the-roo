@@ -30,9 +30,6 @@ public class Game implements GameManager{
 	        players.add(new Player("CPU " + i, colourOrder.get(i)));
 	    }
 	}
-	public int getTurn() {
-		return turn;
-	}
 	public void setTurn(int turn) {
 		this.turn = turn;
 	}

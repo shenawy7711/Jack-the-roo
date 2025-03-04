@@ -58,7 +58,13 @@ public class Deck {
 
     public static Card drawCard() {
         if (!cardsPool.isEmpty()) {
-            return cardsPool.remove(0);
+        	shuffleDeck();
+        	for (int i = 0;i<4;i++) {
+        		if (!cardsPool.isEmpty()) {
+        		return cardsPool.remove(0);}
+        	}
+            
+            
         }
         return null;
     }

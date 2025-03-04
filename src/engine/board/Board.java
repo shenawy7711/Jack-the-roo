@@ -8,7 +8,7 @@ import model.Colour;
 
 public class Board implements BoardManager{
 	private final GameManager gameManager;
-	private ArrayList<Cell> track;
+	private final ArrayList<Cell> track;
 	private ArrayList<SafeZone> safeZones;
 	private int splitDistance;
 	
