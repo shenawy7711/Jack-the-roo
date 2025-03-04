@@ -47,7 +47,7 @@ public class Board implements BoardManager{
 	public ArrayList<SafeZone> getSafeZones() {
 		return safeZones;
 	}
-	public void assignTrapCell() {
+	private void assignTrapCell() {
 	    Random rand = new Random();
 	    int index = rand.nextInt(track.size());
 

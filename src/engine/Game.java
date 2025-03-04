@@ -36,16 +36,10 @@ public class Game implements GameManager{
 	public ArrayList<Player> getPlayers() {
 		return players;
 	}
-	public void setCurrentPlayerIndex(int currentPlayerIndex) {
-		this.currentPlayerIndex = currentPlayerIndex;
-	}
 	public Board getBoard() {
 		return board;
 	}
 	public ArrayList<Card> getFirePit() {
 		return firePit;
-	}
-	public int getCurrentPlayerIndex() {
-		return currentPlayerIndex;
 	}
 }

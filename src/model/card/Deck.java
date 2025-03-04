@@ -56,7 +56,7 @@ public class Deck {
         return cardsPool;
     }
 
-    public static Card drawCard() {
+    public static Card drawCards() {
         if (!cardsPool.isEmpty()) {
         	shuffleDeck();
         	for (int i = 0;i<4;i++) {
