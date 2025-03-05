@@ -10,6 +10,7 @@ import model.Colour;
 import model.card.Card;
 import model.card.Deck;
 import model.player.Player;
+import model.player.CPU;
 
 public class Game implements GameManager {
     private final Board board;
@@ -27,20 +28,21 @@ public class Game implements GameManager {
         firePit = new ArrayList<>();
         players = new ArrayList<>();
 
-        // Ensure at least 4 colours (1 human + 3 CPUs)
         if (colourOrder.size() < 4) {
             throw new IllegalStateException("Not enough colours for players");
         }
 
-        // Add human player first
         players.add(new Player(playerName, colourOrder.get(0)));
 
-        // Add exactly 3 CPU players with correct names
         for (int i = 1; i <= 3; i++) {  
-            players.add(new Player("CPU " + i, colourOrder.get(i)));
+            players.add(new CPU("CPU " + i, colourOrder.get(i), board));
+        }
+
+        for (Player player : players) {
+            ArrayList<Card> hand = Deck.drawCards();
+            player.setHand(hand);
         }
     }
-
 
     public void setTurn(int turn) {
         this.turn = turn;
