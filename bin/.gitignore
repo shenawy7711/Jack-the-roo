@@ -1,6 +1,4 @@
-/engine/
-<<<<<<< Updated upstream
-=======
-/exception/
->>>>>>> Stashed changes
+/test/
 /model/
+/engine/
+/exception/
