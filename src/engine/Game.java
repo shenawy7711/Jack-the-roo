@@ -44,9 +44,7 @@ public class Game implements GameManager {
         }
     }
 
-    public void setTurn(int turn) {
-        this.turn = turn;
-    }
+   
 
     public ArrayList<Player> getPlayers() {
         return players;

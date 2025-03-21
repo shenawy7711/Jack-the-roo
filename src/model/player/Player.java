@@ -6,7 +6,7 @@ public class Player {
 	private final String name;
 	private final Colour colour;
 	private ArrayList<Card> hand;
-	private ArrayList<Marble> marbles;
+	private final ArrayList<Marble> marbles;
 	private final Card selectedCard;
 	private final ArrayList<Marble> selectedMarbles;
 	public Player(String name, Colour colour) {
@@ -20,7 +20,7 @@ public class Player {
 	        this.marbles.add(new Marble(colour));
 	    }
 	}
-
+	
 	public ArrayList<Card> getHand() {
 		return hand;
 	}
@@ -35,10 +35,6 @@ public class Player {
 	}
 	public ArrayList<Marble> getMarbles() {
 		return marbles;
-	}
-
-	public void setMarbles(ArrayList<Marble> marbles) {
-		this.marbles = marbles;
 	}
 
 	public Card getSelectedCard() {

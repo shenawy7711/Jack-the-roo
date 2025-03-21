@@ -9,7 +9,7 @@ import model.Colour;
 public class Board implements BoardManager{
 	private final GameManager gameManager;
 	private final ArrayList<Cell> track;
-	private ArrayList<SafeZone> safeZones;
+	private final ArrayList<SafeZone> safeZones;
 	private int splitDistance;
 	
 	public Board(ArrayList<Colour> colourOrder, GameManager gameManager) {
