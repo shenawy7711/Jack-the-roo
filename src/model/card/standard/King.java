@@ -19,6 +19,10 @@ public class King extends Standard {
         super(name, description, 13, suit, boardManager, gameManager);
     }
     @Override
+    public boolean validateMarbleSize(ArrayList<Marble> marbles) {
+        return marbles != null && (marbles.size()==0 ||marbles.size() == 1); 
+    }
+    @Override
     public boolean validateMarbleColours(ArrayList<Marble> marbles) {// max 1 marble to send back to Home Zone 
     	if (marbles == null) {
             return false;
@@ -42,19 +46,20 @@ public class King extends Standard {
             throw new InvalidMarbleException("King  requires 0 or 1 marble to act.");
         }
         if (!validateMarbleColours(marbles)) {
-            throw new InvalidMarbleException("Marble colours invalid for Ace.");
+            throw new InvalidMarbleException("Marble colours invalid for king.");
         }
         if (marbles.isEmpty()) {
             try {
                 
-                gameManager.fieldMarble();
-            } catch (CannotFieldException | IllegalDestroyException e) {
+                gameManager.getActivePlayerColour();
+            } catch (Exception  e) {
                 throw new StandardActionException(e.getMessage()) ;
             }
             return;
         }
         Marble marble = marbles.get(0);
         try {
+        	
             boardManager.moveBy(marble,13 , true);
         } catch (IllegalMovementException | IllegalDestroyException e) {
             throw new StandardActionException(e.getMessage());

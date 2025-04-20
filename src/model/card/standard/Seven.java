@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import engine.GameManager;
 import engine.board.BoardManager;
 import exception.ActionException;
+import exception.GameException;
 import exception.IllegalDestroyException;
 import exception.IllegalMovementException;
 import exception.InvalidMarbleException;
@@ -44,19 +45,23 @@ public class Seven extends Standard {
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-    	try {
-    	    if (marbles.size() == 1) {
-    	        boardManager.moveBy(marbles.get(0), 7, false);
-    	    } else {
-    	        int splitDistance = boardManager.getSplitDistance(); // If this doesn't throw it, remove from catch
-    	        boardManager.moveBy(marbles.get(0), splitDistance, false);
-    	        boardManager.moveBy(marbles.get(1), 7 - splitDistance, false);
-    	    }
-    	} catch (IllegalMovementException | IllegalDestroyException e) {
-    	    throw new StandardActionException(e.getMessage());
-    	}
+        if (!validateMarbleSize(marbles)) throw new InvalidMarbleException("Invalid marble count.");
+        if (!validateMarbleColours(marbles)) throw new InvalidMarbleException("Invalid marble colours.");
+        try {
+            if (marbles.size() == 1) {
+                boardManager.moveBy(marbles.get(0), 7, false);
+            } else {
+                int split =  boardManager.getSplitDistance();
+                if (split < 1 || split > 6) throw new SplitOutOfRangeException("Split out of range.");
+                boardManager.moveBy(marbles.get(0), split, false);
+                boardManager.moveBy(marbles.get(1), 7 - split, false);
+            }
+        } catch (GameException e) {
+            throw new StandardActionException(e.getMessage());
+        }
+    }
 
     }
 
 
-}
+

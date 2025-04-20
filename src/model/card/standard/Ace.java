@@ -57,7 +57,7 @@ public class Ace extends Standard {
             try {
                 
                 gameManager.fieldMarble();
-            } catch (CannotFieldException | IllegalDestroyException e) {
+            } catch (CannotFieldException  e) {
                 throw new StandardActionException(e.getMessage()) ;
             }
             return;

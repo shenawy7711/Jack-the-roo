@@ -42,7 +42,7 @@ public class Four  extends Standard {
         try {
             boardManager.moveBy(marbles.get(0), -4, false);
         } catch (IllegalMovementException | IllegalDestroyException e) {
-            throw new StandardActionException(e.getMessage());
+            throw new InvalidMarbleException(e.getMessage());
         }
     }
 }
