@@ -48,7 +48,10 @@ public class Seven extends Standard {
         if (!validateMarbleSize(marbles)) throw new InvalidMarbleException("Invalid marble count.");
         if (!validateMarbleColours(marbles)) throw new InvalidMarbleException("Invalid marble colours.");
         try {
-            if (marbles.size() == 1) {
+        	if(marbles.size().equals(null)) {
+        		
+        	}
+        	else if (marbles.size() == 1) {
                 boardManager.moveBy(marbles.get(0), 7, false);
             } else {
                 int split =  boardManager.getSplitDistance();

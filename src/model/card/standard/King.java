@@ -59,10 +59,12 @@ public class King extends Standard {
         }
         Marble marble = marbles.get(0);
         try {
-        	
+        	gameManager.getActivePlayerColour();
             boardManager.moveBy(marble,13 , true);
         } catch (IllegalMovementException | IllegalDestroyException e) {
             throw new StandardActionException(e.getMessage());
+        }catch (Exception e) {
+        	throw new StandardActionException(e.getMessage());
         }
     }
 }

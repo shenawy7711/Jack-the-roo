@@ -105,26 +105,41 @@ public class Board implements BoardManager {
         }
     }
 
-    private void move(Marble marble, ArrayList<Cell> fullPath, boolean destroy) 
-            throws IllegalDestroyException {
-        Cell currentCell = fullPath.get(0);
-        currentCell.setMarble(null);
+    private void move(Marble marble, ArrayList<Cell> fullPath, boolean destroy) throws IllegalDestroyException {
+        Cell start = fullPath.get(0);
+        Cell target = fullPath.get(fullPath.size() - 1);
 
-        Cell targetCell = fullPath.get(fullPath.size() - 1);
-        if (targetCell.getMarble() != null) {
-            if (destroy) {
-                gameManager.sendHome(targetCell.getMarble());
+        // Destroy marbles on path (if destroy == true for King)
+        if (destroy) {
+            for (int i = 1; i < fullPath.size(); i++) {
+                Cell cell = fullPath.get(i);
+                Marble occupant = cell.getMarble();
+                if (occupant != null && cell.getCellType() != CellType.SAFE) {
+                    gameManager.sendHome(occupant);
+                    cell.setMarble(null);
+                }
+            }
+        } else {
+            Marble occupant = target.getMarble();
+            if (occupant != null) {
+                if (target.getCellType() == CellType.SAFE) {
+                    throw new IllegalDestroyException("Cannot destroy marble in Safe Zone.");
+                }
+                gameManager.sendHome(occupant);
+                target.setMarble(null);
             }
         }
 
-        targetCell.setMarble(marble);
+        start.setMarble(null);
+        target.setMarble(marble);
 
-        if (targetCell.isTrap()) {
+        if (target.isTrap()) {
+            target.setMarble(null); 
             gameManager.sendHome(marble);
-            targetCell.setMarble(null);
-            assignTrapCell();
+            assignTrapCell(); 
         }
     }
+
     private void validateSwap(Marble marble1, Marble marble2) throws IllegalSwapException {
         int pos1 = getPositionInPath(track, marble1);
         int pos2 = getPositionInPath(track, marble2);

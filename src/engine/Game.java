@@ -56,5 +56,10 @@ public class Game implements GameManager {
     public ArrayList<Card> getFirePit() {
         return firePit;
     }
+    @Override
+    public Colour getActivePlayerColour() {
+        return players.get(currentPlayerIndex).getColour();
+    }
+
     
 }
