@@ -89,33 +89,22 @@ public class Board implements BoardManager {
         return -1;
     }
     private int getBasePosition(Colour colour) {
-        if (colour == null) {
-            return -1;
+        if (colour == null) return -1;
+        
+        switch (colour) {
+            case RED:
+                return 0;
+            case BLUE:
+                return 25;
+            case YELLOW:
+                return 50;
+            case GREEN:
+                return 75;
+            default:
+                return -1;
         }
-
-        ArrayList<Colour> colourOrder = new ArrayList<>();
-        colourOrder.add(Colour.GREEN);
-        colourOrder.add(Colour.RED);
-        colourOrder.add(Colour.YELLOW);
-        colourOrder.add(Colour.BLUE);
-
-        int index = colourOrder.indexOf(colour);
-        if (index == -1) {
-            return -1;
-        }
-
-        int basePosition = index * 25;
-
-        if (basePosition < 0 || basePosition >= track.size()) {
-            return -1; 
-        }
-        Cell cell = track.get(basePosition);
-        if (cell.getCellType() != CellType.BASE) {
-            return -1; 
-        }
-
-        return basePosition;
     }
+
     private void move(Marble marble, ArrayList<Cell> fullPath, boolean destroy) 
             throws IllegalDestroyException {
         Cell currentCell = fullPath.get(0);
@@ -175,31 +164,56 @@ public class Board implements BoardManager {
     }
     @Override
     public void moveBy(Marble marble, int steps, boolean destroy) throws IllegalMovementException, IllegalDestroyException {
-        ArrayList<Cell> path = validateSteps(marble, steps);
-        if (path.isEmpty()) {
-            throw new IllegalMovementException("Invalid movement path.");
+        ArrayList<Cell> fullPath = validateSteps(marble, steps);
+        validatePath(marble, fullPath, destroy);
+        move(marble, fullPath, destroy);
+    }
+    private void validatePath(Marble marble, ArrayList<Cell> fullPath, boolean destroy) throws IllegalMovementException {
+        if (fullPath == null || fullPath.size() < 2) {
+            throw new IllegalMovementException("Path is invalid or too short.");
         }
 
-        Cell currentCell = path.get(0);
-        Cell targetCell = path.get(path.size() - 1);
+        Cell start = fullPath.get(0);
+        Cell target = fullPath.get(fullPath.size() - 1);
+        Colour playerColour = marble.getColour();
+        int blockageCount = 0;
 
-        if (targetCell.getMarble() != null) {
-            if (!destroy) {
-                throw new IllegalMovementException("Target cell is occupied.");
+        for (int i = 1; i < fullPath.size(); i++) {
+            Cell cell = fullPath.get(i);
+            Marble occupant = cell.getMarble();
+            CellType type = cell.getCellType();
+
+            boolean isTarget = (i == fullPath.size() - 1);
+
+            // Rule (d) – Safe zone immunity
+            if (type == CellType.SAFE && occupant != null) {
+                throw new IllegalMovementException("Cannot land on or bypass marbles in Safe Zone.");
             }
-            if (targetCell.getCellType() == CellType.SAFE) {
-                throw new IllegalDestroyException("Cannot destroy marble in safe zone.");
+
+            if (occupant != null) {
+                boolean sameOwner = occupant.getColour().equals(playerColour);
+
+                if (sameOwner) {
+                    throw new IllegalMovementException("Cannot land on or bypass own marbles.");
+                }
+
+                if (!destroy || !isTarget) {
+                    blockageCount++;
+                }
             }
-            gameManager.sendHome(targetCell.getMarble());
+
+            // Rule (b) – Safe Zone Entry block applies to the entire path
+            if (type == CellType.ENTRY && occupant != null && !isTarget) {
+                throw new IllegalMovementException("Safe Zone Entry is blocked.");
+            }
         }
 
-        currentCell.setMarble(null);
-        targetCell.setMarble(marble);
-
-        if (targetCell.isTrap()) {
-            gameManager.sendHome(marble);
+        // Rule (a) – Cannot pass more than one opponent marble (even if not destroyed)
+        if (!destroy && blockageCount > 1) {
+            throw new IllegalMovementException("Cannot move: more than one marble blocking the path.");
         }
     }
+
     @Override
     public void destroyMarble(Marble marble) throws IllegalDestroyException {
         if (marble == null) {
@@ -335,15 +349,9 @@ public class Board implements BoardManager {
         if (basePosition == -1) {
             return -1;
         }
-        int entryPosition = (basePosition - 2 + 100) % 100; 
-        if (entryPosition >= 0 && entryPosition < track.size()) {
-            Cell entryCell = track.get(entryPosition);
-            if (entryCell.getCellType() == CellType.ENTRY) {
-                return entryPosition;
-            }
-        }
-        return -1;
+        return (basePosition - 2 + 100) % 100;
     }
+
     private ArrayList<Cell> validateSteps(Marble marble, int steps) throws IllegalMovementException {
         ArrayList<Cell> fullPath = new ArrayList<>();
 

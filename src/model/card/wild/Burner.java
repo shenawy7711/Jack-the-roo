@@ -26,10 +26,18 @@ public class Burner extends Wild {
         if (marbles == null || marbles.isEmpty()) {
             return false;
         }
+
         Colour activeColour = gameManager.getActivePlayerColour();
-        return !marbles.get(0).getColour().equals(activeColour);
+
+        for (Marble marble : marbles) {
+            if (marble.getColour().equals(activeColour)) {
+                return false; // found a marble with same colour, invalid
+            }
+        }
+
+        return true; // all marbles are of different colour (opponent)
     }
-    
+
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
         try {

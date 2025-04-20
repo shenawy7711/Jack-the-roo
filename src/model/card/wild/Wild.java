@@ -18,10 +18,7 @@ public abstract class Wild extends Card {
     public boolean validateMarbleSize(ArrayList<Marble> marbles) {
         return marbles != null && marbles.size() == 1;
     }
-    @Override
-    public boolean validateMarbleColours(ArrayList<Marble> marbles) {
-        return marbles != null && !marbles.isEmpty();
-    }
+   
     @Override
     public abstract void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException;
 }
