@@ -23,22 +23,8 @@ public class Ace extends Standard {
         return marbles != null && (marbles.size()==0 ||marbles.size() == 1); 
     }
 
-    @Override
-    public boolean validateMarbleColours(ArrayList<Marble> marbles) {// max 1 marble to send back to Home Zone 
-    	if (marbles == null) {
-            return false;
-        }
-        if (marbles.size() == 0) {
-            return true;
-        }
-        if (marbles.size() == 1) {
-            Colour activeColour = gameManager.getActivePlayerColour();
-            Marble Chosen = marbles.get(0);
-            return Chosen.getColour() == activeColour;
-        }
-        
-        return false;
-    }
+    
+    
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
@@ -58,7 +44,7 @@ public class Ace extends Standard {
                 
                 gameManager.fieldMarble();
             } catch (CannotFieldException  e) {
-                throw new StandardActionException(e.getMessage()) ;
+                throw new CannotFieldException(e.getMessage()) ;
             }
             return;
         }

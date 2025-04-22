@@ -40,10 +40,17 @@ public class Burner extends Wild {
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
+        if (!validateMarbleSize(marbles)) {
+            throw new InvalidMarbleException("Burner requires exactly one marble.");
+        }
+        if (!validateMarbleColours(marbles)) {
+            throw new InvalidMarbleException("Burner can only burn an opponent’s marble on the track.");
+        }
         try {
             boardManager.destroyMarble(marbles.get(0));
         } catch (IllegalDestroyException e) {
             throw new StandardActionException(e.getMessage());
         }
     }
+
 }

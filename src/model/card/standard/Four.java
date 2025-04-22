@@ -23,19 +23,7 @@ public class Four  extends Standard {
         return marbles.size() == 1;
     }
 
-    @Override
-    public boolean validateMarbleColours(ArrayList<Marble> marbles) {
-        if (marbles == null || marbles.isEmpty()) {
-            return false;
-        }
-        Colour currentPlayerColour = gameManager.getActivePlayerColour();
-        for (Marble m : marbles) {
-            if (!m.getColour().equals(currentPlayerColour)) {
-                return false;
-            }
-        }
-        return true;
-    }
+    
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {

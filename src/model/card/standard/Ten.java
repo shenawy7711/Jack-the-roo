@@ -20,16 +20,11 @@ public class Ten extends Standard {
     }
     @Override
     public boolean validateMarbleSize(ArrayList<Marble> marbles) {
-        // Ten can operate with 0 or 1 marble:
-        //  - 0 => discard from next player's hand and skip
-        //  - 1 => standard 10-step move
         return marbles.size() == 0 || marbles.size() == 1;
     }
 
     @Override
     public boolean validateMarbleColours(ArrayList<Marble> marbles) {
-        // If one marble is selected, it must be your (active player's) marble.
-        // If zero marbles are selected, no color check needed.
         if (marbles.size() == 1) {
             Colour activeColour = gameManager.getActivePlayerColour();
             return marbles.get(0).getColour().equals(activeColour);
@@ -40,21 +35,23 @@ public class Ten extends Standard {
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
         try {
-            if (marbles.isEmpty()) {
-                // 0 marbles => discard random card from NEXT player's hand, skip that player's turn
+            if (marbles == null || marbles.isEmpty()) {
                 Colour nextPlayerColour = gameManager.getNextPlayerColour();
                 gameManager.discardCard(nextPlayerColour);
-                // The “skip next turn” logic might be in the Game or GameManager after discarding.
-            } else {
-                // 1 marble => move 10 steps as standard movement
+            } 
+            else if (marbles.size() == 1) {
                 boardManager.moveBy(marbles.get(0), 10, false);
             }
-        } catch (CannotDiscardException e) {
-            // If the next player’s hand is empty, can’t discard -> throw standard action exception
+            else {
+                throw new InvalidMarbleException("Ten card requires either zero or one marble selected.");
+            }
+        } 
+        catch (CannotDiscardException e) {
             throw new StandardActionException(e.getMessage());
-        } catch (IllegalMovementException | IllegalDestroyException e) {
-            // Wrap board exceptions
+        } 
+        catch (IllegalMovementException | IllegalDestroyException e) {
             throw new StandardActionException(e.getMessage());
         }
     }
+
 }

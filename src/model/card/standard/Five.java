@@ -23,14 +23,15 @@ public class Five extends Standard {
     
     @Override
     public boolean validateMarbleColours(ArrayList<Marble> marbles) {
-        return marbles != null && !marbles.isEmpty();
+        return marbles != null && marbles.size() == 1;
     }
 
     
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
         try {
-            boardManager.moveBy(marbles.get(0), 5, false);
+        	Marble marble1 =marbles.get(0);
+            boardManager.moveBy(marble1, 5, false);
         } catch (IllegalMovementException | IllegalDestroyException e) {
             throw new StandardActionException(e.getMessage());
         }
