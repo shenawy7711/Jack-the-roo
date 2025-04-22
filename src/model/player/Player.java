@@ -71,6 +71,10 @@ public class Player {
         }
         selectedMarbles.add(marble);
     }
+    public void deselectAll() {
+        this.selectedCard = null;
+        this.selectedMarbles.clear();
+    }
 
     public void play() throws GameException {
         if (selectedCard == null) {
