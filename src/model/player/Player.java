@@ -55,6 +55,18 @@ public class Player {
     public Card getSelectedCard() {
         return selectedCard;
     }
+    
+    public void regainMarble(Marble marble) {
+    	this.marbles.add(marble);
+    }
+    
+    public Marble getOneMarble() {
+    	if (!this.marbles.isEmpty()) 
+    		return this.marbles.get(0);
+    	else 
+    		return null;
+    }
+    
     public void selectCard(Card card) throws InvalidCardException {
         if (!hand.contains(card)) {
             throw new InvalidCardException("Selected card is not in the player's hand.");
