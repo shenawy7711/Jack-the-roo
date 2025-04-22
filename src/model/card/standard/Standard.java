@@ -30,13 +30,7 @@ public class Standard extends Card {
         return suit;
     }
      
-	
 
-	@Override
-	public boolean validateMarbleColours(ArrayList<Marble> marbles) {
-		
-		return super.validateMarbleColours(marbles);
-	}
 
 	@Override
 	public void act(ArrayList<Marble> marbles) 

@@ -23,20 +23,7 @@ public class Queen extends Standard {
         return marbles != null && marbles.size() == 1; 
     }
 
-    @Override
-    public boolean validateMarbleColours(ArrayList<Marble> marbles) {
-        if (marbles == null || marbles.size() != 2) {
-            return false;
-        }
-        Colour currentPlayer = gameManager.getActivePlayerColour();
-        int countActive = 0;
-        for (Marble m : marbles) {
-            if (m.getColour() == currentPlayer) {
-            	countActive++;
-            }
-        }
-        return (countActive == 1);
-    }
+    
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
