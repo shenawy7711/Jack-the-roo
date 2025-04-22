@@ -16,10 +16,7 @@ public class Saver extends Wild {
     public Saver(String name, String description, BoardManager boardManager, GameManager gameManager) {
         super(name, description, boardManager, gameManager);
     }
-    @Override
-    public boolean validateMarbleSize(ArrayList<Marble> marbles) {
-        return marbles != null && marbles.size() == 1;
-    }
+   
     
     @Override
     public boolean validateMarbleColours(ArrayList<Marble> marbles) {
