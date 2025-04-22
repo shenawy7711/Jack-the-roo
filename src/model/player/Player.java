@@ -55,5 +55,36 @@ public class Player {
     public Card getSelectedCard() {
         return selectedCard;
     }
+    public void selectCard(Card card) throws InvalidCardException {
+        if (!hand.contains(card)) {
+            throw new InvalidCardException("Selected card is not in the player's hand.");
+        }
+        this.selectedCard = card;
+    }
+
+    public void selectMarble(Marble marble) throws InvalidMarbleException {
+        if (selectedMarbles.size() >= 2) {
+            throw new InvalidMarbleException("Cannot select more than two marbles.");
+        }
+        if (!marbles.contains(marble)) {
+            throw new InvalidMarbleException("Selected marble does not belong to the player.");
+        }
+        selectedMarbles.add(marble);
+    }
+
+    public void play() throws GameException {
+        if (selectedCard == null) {
+            throw new InvalidCardException("No card selected.");
+        }
+        if (!selectedCard.validateMarbleSize(selectedMarbles)) {
+            throw new InvalidMarbleException("Incorrect number of marbles selected for this card.");
+        }
+        if (!selectedCard.validateMarbleColours(selectedMarbles)) {
+            throw new InvalidMarbleException("Invalid marble color selection for this card.");
+        }
+        selectedCard.act(selectedMarbles);
+    }
+
+	
 
 }

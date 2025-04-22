@@ -6,6 +6,10 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import engine.board.Board;
+import exception.GameException;
+import exception.InvalidCardException;
+import exception.InvalidMarbleException;
+import exception.SplitOutOfRangeException;
 import model.Colour;
 import model.card.Card;
 import model.card.Deck;
@@ -59,6 +63,53 @@ public class Game implements GameManager {
     @Override
     public Colour getActivePlayerColour() {
         return players.get(currentPlayerIndex).getColour();
+    }
+    public void selectCard(Card card) throws InvalidCardException {
+        players.get(currentPlayerIndex).selectCard(card);
+    }
+
+    public void selectMarble(Marble marble) throws InvalidMarbleException {
+        players.get(currentPlayerIndex).selectMarble(marble);
+    }
+
+    public void deselectAll() {
+        players.get(currentPlayerIndex).deselectAll();
+    }
+
+    public void editSplitDistance(int splitDistance) throws SplitOutOfRangeException {
+        if (splitDistance < 1 || splitDistance > 6) {
+            throw new SplitOutOfRangeException("Split distance must be between 1 and 6.");
+        }
+        board.setSplitDistance(splitDistance);
+    }
+
+    public boolean canPlayTurn() {
+        return !players.get(currentPlayerIndex).getHand().isEmpty();
+    }
+
+    public void playPlayerTurn() throws GameException {
+        players.get(currentPlayerIndex).play();
+    }
+
+    public void endPlayerTurn() {
+        Player currentPlayer = players.get(currentPlayerIndex);
+        if (currentPlayer.getSelectedCard() != null) {
+            firePit.add(currentPlayer.getSelectedCard());
+            currentPlayer.getHand().remove(currentPlayer.getSelectedCard());
+        }
+        currentPlayer.deselectAll();
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        turn++;
+        if (turn % (players.size() * 4) == 0) {
+            for (Player player : players) {
+                player.getHand().addAll(Deck.drawCards());
+            }
+            turn = 0;
+        }
+        if (Deck.getPoolSize() < 4) {
+            Deck.refillPool(firePit);
+            firePit.clear();
+        }
     }
 
     
