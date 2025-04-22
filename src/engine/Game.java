@@ -148,9 +148,7 @@ public void discardCard(Colour colour) throws CannotDiscardException{
     	}
     }
     
-    public Colour getNextPlayerColour() {
-    	return players.get(currentPlayerIndex+1).getColour();
-    }
+   
 
     @Override
     public void sendHome(Marble marble) {
@@ -175,23 +173,24 @@ public void discardCard(Colour colour) throws CannotDiscardException{
     }
     @Override
     public void fieldMarble() throws CannotFieldException, IllegalDestroyException {
-        // 1) Identify the current player
-        Player current = players.get(currentPlayerIndex);
+        Player currentPlayer = players.get(currentPlayerIndex);
+        Marble marble = currentPlayer.getOneMarble();
 
-        // 2) Get one marble from their home zone
-        Marble candidate = current.getOneMarble();
-        if (candidate == null) {
-            // No marbles in the home zone => cannot field
+        if (marble == null) {
             throw new CannotFieldException("No marbles available to field.");
         }
 
-        // 3) Attempt to field onto the board (send marble to its base cell)
-        //    - This may throw an IllegalDestroyException or another exception
-        boardManager.sendToBase(candidate);
-
-        // 4) If successfully fielded, remove it from the player's home zone
-        current.getMarbles().remove(candidate);
+        this.board.sendToBase(marble);
+        currentPlayer.getMarbles().remove(marble);
     }
+
+	@Override
+	public Colour getNextPlayerColour() {
+	    int nextIndex = (currentPlayerIndex + 1) % players.size();
+	    return players.get(nextIndex).getColour();
+	}
+
+
   
     
 }
