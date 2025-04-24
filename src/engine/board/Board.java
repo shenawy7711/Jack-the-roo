@@ -198,10 +198,11 @@ public class Board implements BoardManager {
         if (fullPath == null || fullPath.size() < 2) {
             throw new IllegalMovementException("Path is invalid or too short.");
         }
-
+        
         Cell start = fullPath.get(0);
         Cell target = fullPath.get(fullPath.size() - 1);
-        Colour playerColour = marble.getColour();
+
+        Colour activeColour = gameManager.getActivePlayerColour(); // ✅ Use active player
         int blockageCount = 0;
 
         for (int i = 1; i < fullPath.size(); i++) {
@@ -217,7 +218,7 @@ public class Board implements BoardManager {
             }
 
             if (occupant != null) {
-                boolean sameOwner = occupant.getColour().equals(playerColour);
+                boolean sameOwner = occupant.getColour().equals(activeColour); // ✅ FIX HERE
 
                 if (sameOwner) {
                     throw new IllegalMovementException("Cannot land on or bypass own marbles.");
@@ -228,17 +229,18 @@ public class Board implements BoardManager {
                 }
             }
 
-            // Rule (b) – Safe Zone Entry block applies to the entire path
+            // Rule (b) – Safe Zone Entry block
             if (type == CellType.ENTRY && occupant != null && !isTarget) {
                 throw new IllegalMovementException("Safe Zone Entry is blocked.");
             }
         }
 
-        // Rule (a) – Cannot pass more than one opponent marble (even if not destroyed)
+        // Rule (a) – Cannot pass more than one opponent marble
         if (!destroy && blockageCount > 1) {
             throw new IllegalMovementException("Cannot move: more than one marble blocking the path.");
         }
     }
+
 
     @Override
     public void destroyMarble(Marble marble) throws IllegalDestroyException {
@@ -380,12 +382,13 @@ public class Board implements BoardManager {
 
     private ArrayList<Cell> validateSteps(Marble marble, int steps) throws IllegalMovementException {
         ArrayList<Cell> fullPath = new ArrayList<>();
-
+        
         if (marble == null) {
             throw new IllegalMovementException("Marble is null. Cannot move.");
         }
 
         int trackPos = getPositionInPath(track, marble);
+        fullPath.add(track.get(trackPos)); 
         ArrayList<Cell> marbleSafeZone = getSafeZone(marble.getColour());
         int safePos = (marbleSafeZone != null) ? getPositionInPath(marbleSafeZone, marble) : -1;
 
