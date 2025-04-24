@@ -388,7 +388,7 @@ public class Board implements BoardManager {
         }
 
         int trackPos = getPositionInPath(track, marble);
-        fullPath.add(track.get(trackPos)); 
+    
         ArrayList<Cell> marbleSafeZone = getSafeZone(marble.getColour());
         int safePos = (marbleSafeZone != null) ? getPositionInPath(marbleSafeZone, marble) : -1;
 
@@ -400,6 +400,7 @@ public class Board implements BoardManager {
         }
 
         if (isOnTrack) {
+            fullPath.add(track.get(trackPos));
             int entryPosition = getEntryPosition(marble.getColour());
             if (entryPosition == -1) {
                 throw new IllegalMovementException("No valid entry cell for this colour.");
