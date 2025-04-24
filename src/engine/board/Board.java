@@ -407,8 +407,8 @@ public class Board implements BoardManager {
             }
 
             int distanceToEntry = (entryPosition >= trackPos)
-                ? entryPosition - trackPos
-                : (entryPosition + track.size()) - trackPos;
+                    ? entryPosition - trackPos
+                    : (entryPosition + track.size()) - trackPos;
 
             int safeZoneSize = (marbleSafeZone != null) ? marbleSafeZone.size() : 0;
 
@@ -417,12 +417,14 @@ public class Board implements BoardManager {
             }
 
             if (steps > distanceToEntry) {
-                int currentPos = (trackPos + 1) % track.size();
-                while (currentPos != entryPosition) {
-                    fullPath.add(track.get(currentPos));
-                    currentPos = (currentPos + 1) % track.size();
+                if (trackPos != entryPosition) {
+                    int currentPos = (trackPos + 1) % track.size();
+                    while (currentPos != entryPosition) {
+                        fullPath.add(track.get(currentPos));
+                        currentPos = (currentPos + 1) % track.size();
+                    }
+                    fullPath.add(track.get(entryPosition));
                 }
-                fullPath.add(track.get(entryPosition));
 
                 int remainingSteps = steps - distanceToEntry;
                 Colour activeColour = gameManager.getActivePlayerColour();
