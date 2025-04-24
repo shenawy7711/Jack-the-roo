@@ -37,16 +37,15 @@ public class Ace extends Standard {
         }
 
         if (marbles == null || marbles.isEmpty()) {
-            try {
-                gameManager.fieldMarble();
-                boardManager.moveBy(marbles.get(0), 1, false);
-            } catch (CannotFieldException e) {
-                throw e;
-            } 
+            gameManager.fieldMarble(); // May throw CannotFieldException
             return;
         }
 
-        
+        boardManager.moveBy(marbles.get(0), 1, false);
     }
+
+
+        
+    
 
 }

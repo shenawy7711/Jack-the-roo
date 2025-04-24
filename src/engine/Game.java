@@ -73,8 +73,12 @@ public class Game implements GameManager {
     }
 
     public void selectMarble(Marble marble) throws InvalidMarbleException {
+        if (marble == null) {
+            throw new InvalidMarbleException("Cannot select a null marble.");
+        }
         players.get(currentPlayerIndex).selectMarble(marble);
     }
+
 
     
     public void deselectAll() {
@@ -90,8 +94,10 @@ public class Game implements GameManager {
     }
 
     public boolean canPlayTurn() {
-        return !players.get(currentPlayerIndex).getHand().isEmpty();
+        Player currentPlayer = players.get(currentPlayerIndex);
+        return currentPlayer.getHand().size() > (turn / players.size());
     }
+
 
     public void playPlayerTurn() throws GameException {
         players.get(currentPlayerIndex).play();
@@ -99,24 +105,32 @@ public class Game implements GameManager {
 
     public void endPlayerTurn() {
         Player currentPlayer = players.get(currentPlayerIndex);
+
         if (currentPlayer.getSelectedCard() != null) {
             firePit.add(currentPlayer.getSelectedCard());
             currentPlayer.getHand().remove(currentPlayer.getSelectedCard());
         }
+
         currentPlayer.deselectAll();
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         turn++;
+
         if (turn % (players.size() * 4) == 0) {
-            for (Player player : players) {
-                player.getHand().addAll(Deck.drawCards());
+            if (Deck.getPoolSize() < players.size() * 4) {
+                Deck.refillPool(firePit);
+                firePit.clear();
             }
+
+            for (Player player : players) {
+                for (int i = 0; i < 4; i++) {
+                    player.getHand().addAll(Deck.drawCards());
+                }
+            }
+
             turn = 0;
         }
-        if (Deck.getPoolSize() < 4) {
-            Deck.refillPool(firePit);
-            firePit.clear();
-        }
     }
+
     public Colour checkWin() {
     	for (int i =0; i<board.getSafeZones().size();i++) {
     		if (board.getSafeZones().get(i).isFull())
@@ -139,14 +153,24 @@ public void discardCard(Colour colour) throws CannotDiscardException{
     	}
     }
     
-    public void discardCard() throws CannotDiscardException{
-    	if (this.players.get(currentPlayerIndex).getHand().size()<2)
-    		throw new CannotDiscardException();
-    	else {
-    		Random rand = new Random();
-    		this.players.get(currentPlayerIndex).getHand().remove(rand.nextInt(this.players.get(currentPlayerIndex).getHand().size() - 1) + 1);
-    	}
-    }
+	public void discardCard() throws CannotDiscardException {
+		ArrayList<Integer> candidates = new ArrayList<>();
+		for (int i = 0; i < players.size(); i++) {
+			if (i != currentPlayerIndex && players.get(i).getHand().size() > 0) {
+				candidates.add(i);
+			}
+		}
+
+		if (candidates.isEmpty()) {
+			throw new CannotDiscardException();
+		}
+
+		Random rand = new Random();
+		int targetIndex = candidates.get(rand.nextInt(candidates.size()));
+		ArrayList<Card> hand = players.get(targetIndex).getHand();
+		hand.remove(rand.nextInt(hand.size()));
+	}
+
     
    
 
