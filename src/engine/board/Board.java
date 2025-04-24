@@ -144,19 +144,19 @@ public class Board implements BoardManager {
 
 
     private void validateSwap(Marble marble1, Marble marble2) throws IllegalSwapException {
-        int pos1 = getPositionInPath(track, marble1);
-        int pos2 = getPositionInPath(track, marble2);
-        
-        if (pos1 == -1 || pos2 == -1) {
-            throw new IllegalSwapException("The two marbles aren't on the track.");
-        }
+    	 int pos1 = getPositionInPath(track, marble1);
+         int pos2 = getPositionInPath(track, marble2);
+         
+         if (pos1 == -1 || pos2 == -1) {
+             throw new IllegalSwapException("The two marbles aren't on the track.");
+         }
 
-        Cell cell1 = track.get(pos1);
-        Cell cell2 = track.get(pos2);
-        
-        if (cell1.getCellType() == CellType.BASE || cell2.getCellType() == CellType.BASE) {
-            throw new IllegalSwapException("The opponent's marble is safe in its own Base Cell.");
-        }
+         Cell cell1 = track.get(pos1);
+         Cell cell2 = track.get(pos2);
+         
+         if (cell1.getCellType() == CellType.BASE || cell2.getCellType() == CellType.BASE) {
+             throw new IllegalSwapException("The opponent's marble is safe in its own Base Cell.");
+         }
     }
     private void validateDestroy(int positionInPath) throws IllegalDestroyException {
         if (positionInPath < 0 || positionInPath >= track.size()) {
