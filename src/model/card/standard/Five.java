@@ -16,9 +16,7 @@ public class Five extends Standard {
     public Five(String name, String description, Suit suit, BoardManager boardManager, GameManager gameManager) {
         super(name, description, 5, suit, boardManager, gameManager);
     }
-    public boolean validateMarbleSize(ArrayList<Marble> marbles) {
-        return marbles != null && marbles.size() == 1;
-    }
+    
 
     
     @Override
@@ -29,6 +27,14 @@ public class Five extends Standard {
     
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
+        if (marbles == null || marbles.size() != 1) {
+            throw new InvalidMarbleException("Five card requires exactly one marble.");
+        }
+
+        if (!validateMarbleColours(marbles)) {
+            throw new InvalidMarbleException("Invalid marble colours for Five card.");
+        }
+
         try {
         	Marble marble1 =marbles.get(0);
             boardManager.moveBy(marble1, 5, false);
@@ -36,4 +42,5 @@ public class Five extends Standard {
             throw new StandardActionException(e.getMessage());
         }
     }
+
 }

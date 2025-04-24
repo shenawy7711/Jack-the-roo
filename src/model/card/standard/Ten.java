@@ -34,24 +34,26 @@ public class Ten extends Standard {
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-        try {
-            if (marbles == null || marbles.isEmpty()) {
+        if (marbles == null || marbles.isEmpty()) {
+            try {
                 Colour nextPlayerColour = gameManager.getNextPlayerColour();
                 gameManager.discardCard(nextPlayerColour);
-            } 
-            else if (marbles.size() == 1) {
+            } catch (CannotDiscardException e) {
+                throw e; 
+            }
+            return;
+        }
+
+        if (marbles.size() == 1) {
+            try {
                 boardManager.moveBy(marbles.get(0), 10, false);
+            } catch (IllegalMovementException | IllegalDestroyException e) {
+                throw new StandardActionException(e.getMessage());
             }
-            else {
-                throw new InvalidMarbleException("Ten card requires either zero or one marble selected.");
-            }
-        } 
-        catch (CannotDiscardException e) {
-            throw new StandardActionException(e.getMessage());
-        } 
-        catch (IllegalMovementException | IllegalDestroyException e) {
-            throw new StandardActionException(e.getMessage());
+        } else {
+            throw new InvalidMarbleException("Ten card requires either zero or one marble selected.");
         }
     }
+
 
 }

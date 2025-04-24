@@ -109,12 +109,14 @@ public class Board implements BoardManager {
         Cell start = fullPath.get(0);
         Cell target = fullPath.get(fullPath.size() - 1);
 
-        // Destroy marbles on path (if destroy == true for King)
         if (destroy) {
             for (int i = 1; i < fullPath.size(); i++) {
                 Cell cell = fullPath.get(i);
                 Marble occupant = cell.getMarble();
-                if (occupant != null && cell.getCellType() != CellType.SAFE) {
+                if (occupant != null) {
+                    if (cell.getCellType() == CellType.SAFE) {
+                        throw new IllegalDestroyException("Cannot destroy marble in Safe Zone.");
+                    }
                     gameManager.sendHome(occupant);
                     cell.setMarble(null);
                 }
@@ -134,11 +136,12 @@ public class Board implements BoardManager {
         target.setMarble(marble);
 
         if (target.isTrap()) {
-            target.setMarble(null); 
+            target.setMarble(null);
             gameManager.sendHome(marble);
-            assignTrapCell(); 
+            assignTrapCell();
         }
     }
+
 
     private void validateSwap(Marble marble1, Marble marble2) throws IllegalSwapException {
         int pos1 = getPositionInPath(track, marble1);
@@ -422,7 +425,7 @@ public class Board implements BoardManager {
                         fullPath.add(track.get(posOnTrack));
                     }
                 } else {
-                    for (int i = 0; i <= remainingSteps && i < safeZoneSize; i++) {
+                    for (int i = 0; i <remainingSteps && i < safeZoneSize; i++) {
                         fullPath.add(marbleSafeZone.get(i));
                     }
                 }

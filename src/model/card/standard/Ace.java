@@ -28,31 +28,25 @@ public class Ace extends Standard {
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-       
-    	if (!validateMarbleSize(marbles)) {
-            throw new InvalidMarbleException(
-                "Ace requires 0 or 1 marble to act."
-            );
+        if (!validateMarbleSize(marbles)) {
+            throw new InvalidMarbleException("Ace requires 0 or 1 marble to act.");
         }
+
         if (!validateMarbleColours(marbles)) {
-            throw new InvalidMarbleException(
-                "Marble colours invalid for Ace."
-            );
+            throw new InvalidMarbleException("Marble colours invalid for Ace.");
         }
-        if (marbles.isEmpty()) {
+
+        if (marbles == null || marbles.isEmpty()) {
             try {
-                
                 gameManager.fieldMarble();
-            } catch (CannotFieldException  e) {
-                throw new CannotFieldException(e.getMessage()) ;
-            }
+                boardManager.moveBy(marbles.get(0), 1, false);
+            } catch (CannotFieldException e) {
+                throw e;
+            } 
             return;
         }
-        Marble marble = marbles.get(0);
-        try {
-            boardManager.moveBy(marble,1 , false);
-        } catch (IllegalMovementException | IllegalDestroyException e) {
-            throw new StandardActionException(e.getMessage());
-        }
+
+        
     }
+
 }
