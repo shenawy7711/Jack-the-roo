@@ -151,7 +151,7 @@ public class Board implements BoardManager {
         Cell cell1 = track.get(pos1);
         Cell cell2 = track.get(pos2);
         
-        if (cell1.getCellType() == CellType.SAFE || cell2.getCellType() == CellType.SAFE) {
+        if (cell1.getCellType() == CellType.BASE || cell2.getCellType() == CellType.BASE) {
             throw new IllegalSwapException("The opponent's marble is safe in its own Base Cell.");
         }
     }
