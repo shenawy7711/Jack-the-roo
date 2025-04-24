@@ -382,13 +382,12 @@ public class Board implements BoardManager {
 
     private ArrayList<Cell> validateSteps(Marble marble, int steps) throws IllegalMovementException {
         ArrayList<Cell> fullPath = new ArrayList<>();
-        
+
         if (marble == null) {
             throw new IllegalMovementException("Marble is null. Cannot move.");
         }
 
         int trackPos = getPositionInPath(track, marble);
-    
         ArrayList<Cell> marbleSafeZone = getSafeZone(marble.getColour());
         int safePos = (marbleSafeZone != null) ? getPositionInPath(marbleSafeZone, marble) : -1;
 
@@ -401,17 +400,15 @@ public class Board implements BoardManager {
 
         if (isOnTrack) {
             fullPath.add(track.get(trackPos));
+
             int entryPosition = getEntryPosition(marble.getColour());
             if (entryPosition == -1) {
                 throw new IllegalMovementException("No valid entry cell for this colour.");
             }
 
-            int distanceToEntry;
-            if (entryPosition >= trackPos) {
-                distanceToEntry = entryPosition - trackPos;
-            } else {
-                distanceToEntry = (entryPosition + track.size()) - trackPos;
-            }
+            int distanceToEntry = (entryPosition >= trackPos)
+                ? entryPosition - trackPos
+                : (entryPosition + track.size()) - trackPos;
 
             int safeZoneSize = (marbleSafeZone != null) ? marbleSafeZone.size() : 0;
 
@@ -420,8 +417,7 @@ public class Board implements BoardManager {
             }
 
             if (steps > distanceToEntry) {
-                // Build fullPath along the track up to and including the entry cell.
-                int currentPos = trackPos;
+                int currentPos = (trackPos + 1) % track.size();
                 while (currentPos != entryPosition) {
                     fullPath.add(track.get(currentPos));
                     currentPos = (currentPos + 1) % track.size();
@@ -431,29 +427,24 @@ public class Board implements BoardManager {
                 int remainingSteps = steps - distanceToEntry;
                 Colour activeColour = gameManager.getActivePlayerColour();
                 if (!marble.getColour().equals(activeColour)) {
-                    // For an opponent's marble: continue along the track rather than entering any safe zone.
                     int posOnTrack = entryPosition;
                     for (int i = 0; i < remainingSteps; i++) {
                         posOnTrack = (posOnTrack + 1) % track.size();
                         fullPath.add(track.get(posOnTrack));
                     }
                 } else {
-                    // For the active player's marble, use safe zone if available.
                     for (int i = 0; i < remainingSteps && i < safeZoneSize; i++) {
                         fullPath.add(marbleSafeZone.get(i));
                     }
                 }
             } else {
+                int currentPos = trackPos;
                 if (steps < 0) {
-                    // Moving backwards on the track.
-                    int currentPos = trackPos;
                     for (int i = 0; i < Math.abs(steps); i++) {
                         currentPos = (currentPos - 1 + track.size()) % track.size();
                         fullPath.add(track.get(currentPos));
                     }
                 } else {
-                    // Normal forward movement on the track.
-                    int currentPos = trackPos;
                     for (int i = 0; i < steps; i++) {
                         currentPos = (currentPos + 1) % track.size();
                         fullPath.add(track.get(currentPos));
@@ -462,7 +453,6 @@ public class Board implements BoardManager {
             }
 
         } else {
-            // Moving within the Safe Zone.
             if (steps < 0) {
                 throw new IllegalMovementException("Cannot move backwards in the Safe Zone.");
             }
