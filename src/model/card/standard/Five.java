@@ -36,7 +36,8 @@ public class Five extends Standard {
         }
 
         try {
-            boardManager.moveBy(marbles.get(0), 5, false);
+        	Marble marble1 =marbles.get(0);
+            boardManager.moveBy(marble1, 5, false);
         } catch (IllegalMovementException | IllegalDestroyException e) {
             throw new StandardActionException(e.getMessage());
         }

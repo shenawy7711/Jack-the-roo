@@ -81,8 +81,12 @@ public class Player {
         if (!marbles.contains(marble)) {
             throw new InvalidMarbleException("Selected marble does not belong to the player.");
         }
+        if (selectedMarbles.contains(marble)) {
+            return; // already selected, do nothing
+        }
         selectedMarbles.add(marble);
     }
+
     public void deselectAll() {
         this.selectedCard = null;
         this.selectedMarbles.clear();
