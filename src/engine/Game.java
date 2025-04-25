@@ -76,6 +76,9 @@ public class Game implements GameManager {
         if (marble == null) {
             throw new InvalidMarbleException("Cannot select a null marble.");
         }
+        if (marble.getColour() != getActivePlayerColour()) {
+            throw new InvalidMarbleException("Cannot select marble of different color.");
+        }
         players.get(currentPlayerIndex).selectMarble(marble);
     }
 

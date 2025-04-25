@@ -101,8 +101,9 @@ public class Board implements BoardManager {
 	}
 
     private void move(Marble marble, ArrayList<Cell> fullPath, boolean destroy) throws IllegalDestroyException {
-        if (marble == null || fullPath.isEmpty() || fullPath == null) 
+        if (marble == null || fullPath == null || fullPath.isEmpty()) 
             return;
+            
         Cell start = fullPath.get(0);
         Cell target = fullPath.get(fullPath.size() - 1);
 
@@ -118,7 +119,9 @@ public class Board implements BoardManager {
                     cell.setMarble(null);
                 }
             }
-        } else if (target.getMarble() != null) {
+        }
+
+        if (target.getMarble() != null) {
             if (target.getCellType() == CellType.SAFE || 
                 (target.getCellType() == CellType.BASE && 
                  target.getMarble().getColour() == target.getMarble().getColour()))

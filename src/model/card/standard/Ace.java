@@ -33,9 +33,8 @@ public class Ace extends Standard {
         if (!validateMarbleColours(marbles))
             throw new InvalidMarbleException("Marble colours invalid for Ace.");
 
-        
         if (marbles == null || marbles.isEmpty()) {
-           throw new CannotFieldException ();                                
+            throw new StandardActionException("Cannot act with empty marbles list");
         }
 
         try {
@@ -44,10 +43,5 @@ public class Ace extends Standard {
             throw new StandardActionException(e.getMessage());
         }
     }
-
-
-
-        
-    
 
 }

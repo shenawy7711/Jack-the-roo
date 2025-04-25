@@ -68,14 +68,18 @@ public class Jack extends Standard {
                 Marble marble = marbles.get(0);
                 boardManager.moveBy(marble, 11, false);
             } else {
-                Marble marble1 = marbles.get(0);
-                Marble marble2 = marbles.get(1);
+                Marble activeMarble = null;
+                Marble otherMarble = null;
                 
-                if (marble1.getColour() == gameManager.getActivePlayerColour()) {
-                    boardManager.swap(marble2, marble1);
-                } else {
-                    boardManager.swap(marble1, marble2);
+                for (Marble m : marbles) {
+                    if (m.getColour() == gameManager.getActivePlayerColour()) {
+                        activeMarble = m;
+                    } else {
+                        otherMarble = m;
+                    }
                 }
+                
+                boardManager.swap(activeMarble, otherMarble);
             }
         } catch (IllegalMovementException | IllegalDestroyException | IllegalSwapException e) {
             throw new StandardActionException(e.getMessage());
