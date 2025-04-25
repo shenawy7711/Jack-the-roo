@@ -42,13 +42,21 @@ public class Jack extends Standard {
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
         if (marbles == null || marbles.size() != 2) {
-            throw new InvalidMarbleException("Jack card requires two marbles.");
+           return;
         }
 
         if (!validateMarbleColours(marbles)) {
             throw new InvalidMarbleException("Invalid marble colours.");
         }
-
+        if(marbles.size() ==1 ) {
+        	try {
+                Marble marble1 = marbles.get(0);
+                boardManager.moveBy(marble1, 11,false);
+            } catch (IllegalMovementException | IllegalDestroyException e) {
+                throw new StandardActionException(e.getMessage());
+            }
+        }
+        if(marbles.size()==2) {
         try {
             Marble marble1 = marbles.get(0);
             Marble marble2 = marbles.get(1);
@@ -56,7 +64,10 @@ public class Jack extends Standard {
         } catch (IllegalSwapException e) {
             throw new StandardActionException(e.getMessage());
         }
+        }
+        
     }
+    
 
 
 

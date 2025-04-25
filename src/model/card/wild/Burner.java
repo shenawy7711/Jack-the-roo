@@ -31,11 +31,11 @@ public class Burner extends Wild {
 
         for (Marble marble : marbles) {
             if (marble.getColour().equals(activeColour)) {
-                return false; // found a marble with same colour, invalid
+                return false; 
             }
         }
 
-        return true; // all marbles are of different colour (opponent)
+        return true;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class Burner extends Wild {
         try {
             boardManager.destroyMarble(marbles.get(0));
         } catch (IllegalDestroyException e) {
-            throw new StandardActionException(e.getMessage());
+           throw e;
         }
     }
 

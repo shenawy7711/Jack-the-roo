@@ -75,12 +75,7 @@ public class Player {
     }
 
     public void selectMarble(Marble marble) throws InvalidMarbleException {
-        if (selectedMarbles.size() >= 2) {
-            throw new InvalidMarbleException("Cannot select more than two marbles.");
-        }
-        if (!marbles.contains(marble)) {
-            throw new InvalidMarbleException("Selected marble does not belong to the player.");
-        }
+
         if (selectedMarbles.contains(marble)) {
             return; // already selected, do nothing
         }

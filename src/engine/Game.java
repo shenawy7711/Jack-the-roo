@@ -95,8 +95,9 @@ public class Game implements GameManager {
 
     public boolean canPlayTurn() {
         Player currentPlayer = players.get(currentPlayerIndex);
-        return currentPlayer.getHand().size() > (turn / players.size());
-    }
+        return currentPlayer.getHand().size() == (4-turn);
+        }
+
 
 
     public void playPlayerTurn() throws GameException {
@@ -104,32 +105,51 @@ public class Game implements GameManager {
     }
 
     public void endPlayerTurn() {
-        Player currentPlayer = players.get(currentPlayerIndex);
 
-        if (currentPlayer.getSelectedCard() != null) {
-            firePit.add(currentPlayer.getSelectedCard());
-            currentPlayer.getHand().remove(currentPlayer.getSelectedCard());
+        Player active = players.get(currentPlayerIndex);
+
+        /* 1. Choose which card goes to the fire-pit */
+        Card toDiscard = active.getSelectedCard();          // what the player actually picked
+        if (toDiscard == null && !active.getHand().isEmpty()) {
+            // no card was chosen – use the first card in hand instead
+            toDiscard = active.getHand().get(0);
+        }
+        if (toDiscard != null) {
+            active.getHand().remove(toDiscard);             // remove from hand only if it is there
+            firePit.add(toDiscard);                         // and burn it
         }
 
-        currentPlayer.deselectAll();
+        /* 2. Reset player UI state */
+        active.deselectAll();
+
+        /* 3. Pass the turn to the next player */
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-        turn++;
 
-        if (turn % (players.size() * 4) == 0) {
-            if (Deck.getPoolSize() < players.size() * 4) {
-                Deck.refillPool(firePit);
-                firePit.clear();
-            }
+        /* 4. If we’re back to the first player, advance the “round” counter */
+        if (currentPlayerIndex == 0) {
 
-            for (Player player : players) {
-                for (int i = 0; i < 4; i++) {
-                    player.getHand().addAll(Deck.drawCards());
+            int round = ++turn;                             // start counting from 1--4
+            if (round == 4) {
+
+                /* 4a. Time to start a brand-new hand for everyone */
+                turn = 0;                                   // reset round counter
+
+                // ensure the draw pile is big enough; if not, recycle the fire-pit
+                int cardsNeeded = players.size() * 4;
+                if (Deck.getPoolSize() < cardsNeeded) {
+                    Deck.refillPool(firePit);
+                    firePit.clear();
+                }
+
+                // deal four fresh cards to every player
+                for (Player p : players) {
+                    p.getHand().clear();
+                    p.getHand().addAll(Deck.drawCards());
                 }
             }
-
-            turn = 0;
         }
     }
+
 
     public Colour checkWin() {
     	for (int i =0; i<board.getSafeZones().size();i++) {
