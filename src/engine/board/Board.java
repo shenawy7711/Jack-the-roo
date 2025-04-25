@@ -101,24 +101,28 @@ public class Board implements BoardManager {
 	}
 
     private void move(Marble marble, ArrayList<Cell> fullPath, boolean destroy) throws IllegalDestroyException {
-    	if (marble == null || fullPath.isEmpty() || fullPath == null ) 
-    		return;
-    	Cell start = fullPath.get(0);
+        if (marble == null || fullPath.isEmpty() || fullPath == null) 
+            return;
+        Cell start = fullPath.get(0);
         Cell target = fullPath.get(fullPath.size() - 1);
 
         if (destroy) {
             for (int i = 1; i < fullPath.size(); i++) {
                 Cell cell = fullPath.get(i);
                 if (cell.getMarble() != null) {
-                    if (cell.getCellType() == CellType.SAFE)
-                        throw new IllegalDestroyException("Cannot destroy marble in Safe Zone.");
+                    if (cell.getCellType() == CellType.SAFE || 
+                        (cell.getCellType() == CellType.BASE && 
+                         cell.getMarble().getColour() == cell.getMarble().getColour()))
+                        throw new IllegalDestroyException("Cannot destroy marble in protected cell.");
                     gameManager.sendHome(cell.getMarble());
                     cell.setMarble(null);
                 }
             }
         } else if (target.getMarble() != null) {
-            if (target.getCellType() == CellType.SAFE)
-                throw new IllegalDestroyException("Cannot destroy marble in Safe Zone.");
+            if (target.getCellType() == CellType.SAFE || 
+                (target.getCellType() == CellType.BASE && 
+                 target.getMarble().getColour() == target.getMarble().getColour()))
+                throw new IllegalDestroyException("Cannot destroy marble in protected cell.");
             gameManager.sendHome(target.getMarble());
             target.setMarble(null);
         }
@@ -186,8 +190,12 @@ public class Board implements BoardManager {
         validatePath(marble, fullPath, destroy);
         move(marble, fullPath, destroy);
     }
-    private void validatePath(Marble movingMarble, ArrayList<Cell> path, boolean isKingCard)
-            throws IllegalMovementException {
+    private void validatePath(Marble movingMarble, ArrayList<Cell> path, boolean destroy)
+            throws IllegalMovementException, IllegalDestroyException {
+
+        if (path == null || path.isEmpty()) {
+            throw new IllegalMovementException("Invalid path: path cannot be null or empty");
+        }
 
         Colour activePlayerColour = gameManager.getActivePlayerColour();
         int encounteredMarbles = 0;
@@ -199,34 +207,36 @@ public class Board implements BoardManager {
             Marble currentMarble = currentCell.getMarble();
 
             if (currentMarble != null) {
-                encounteredMarbles++;
-
-                boolean samePlayerMarble = currentMarble.getColour() == activePlayerColour;
-                boolean marbleAtItsBase = getPositionInPath(track, currentMarble) == getBasePosition(currentMarble.getColour());
-
-                if (!isKingCard) {
-                    if (samePlayerMarble)
-                        throw new IllegalMovementException("Invalid move: your marble blocks this path.");
-
-                    if (encounteredMarbles > 1 && step < path.size() - 1)
-                        throw new IllegalMovementException("Invalid move: multiple marbles obstruct the way.");
-
-                    if (movingToSafeZone && currentCell.getCellType() == CellType.ENTRY)
-                        throw new IllegalMovementException("Cannot enter safe zone: entry cell is occupied.");
+                if (currentCell.getCellType() == CellType.SAFE) {
+                    throw new IllegalMovementException("Invalid move: cannot pass through safe zone marble.");
                 }
 
-                if (marbleAtItsBase)
+                boolean marbleAtItsBase = getPositionInPath(track, currentMarble) == getBasePosition(currentMarble.getColour());
+                if (marbleAtItsBase && currentCell.getCellType() == CellType.BASE) {
                     throw new IllegalMovementException("Invalid move: marble in base cell cannot be bypassed.");
+                }
 
-                if (isKingCard && currentCell.getCellType() == CellType.SAFE)
-                    throw new IllegalMovementException("King move invalid: cannot pass or land on safe zone marble.");
+                boolean samePlayerMarble = currentMarble.getColour() == activePlayerColour;
+
+                if (!destroy) {
+                    if (samePlayerMarble) {
+                        throw new IllegalMovementException("Invalid move: your marble blocks this path.");
+                    }
+
+                    if (step < path.size() - 1) {
+                        encounteredMarbles++;
+                        if (encounteredMarbles > 1) {
+                            throw new IllegalMovementException("Invalid move: multiple marbles obstruct the way.");
+                        }
+                    }
+
+                    if (movingToSafeZone && currentCell.getCellType() == CellType.ENTRY) {
+                        throw new IllegalMovementException("Cannot enter safe zone: entry cell is occupied.");
+                    }
+                }
             }
         }
     }
-
-
-
-
     @Override
     public void destroyMarble(Marble marble) throws IllegalDestroyException {
         if (marble == null) {
@@ -246,16 +256,13 @@ public class Board implements BoardManager {
         }
 
         Cell cell = track.get(trackPos);
-        if (cell.getCellType() == CellType.BASE &&
-            cell.getMarble() != null &&
-            cell.getMarble().getColour().equals(marble.getColour())) {
+        if (cell.getCellType() == CellType.BASE && marble.getColour().equals(marble.getColour())) {
             throw new IllegalDestroyException("Cannot destroy marble in its own base cell.");
         }
 
         cell.setMarble(null);
         gameManager.sendHome(marble);
     }
-
     @Override
     public void sendToBase(Marble marble) throws CannotFieldException {
         if (marble == null)

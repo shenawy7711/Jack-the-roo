@@ -21,64 +21,55 @@ public class Jack extends Standard {
     }
     @Override
     public boolean validateMarbleSize(ArrayList<Marble> marbles) {
-        return marbles != null && (marbles.size() == 1 || marbles.size() == 2);
+        return marbles != null && marbles.size() == 2; // jack swaps 2 cards 
     }
 
     @Override
     public boolean validateMarbleColours(ArrayList<Marble> marbles) {
-        if (marbles == null) {
+        if (marbles == null || marbles.size() != 2) {
             return false;
         }
-        
         Colour currentPlayer = gameManager.getActivePlayerColour();
-        
-        if (marbles.size() == 1) {
-            return marbles.get(0).getColour() == currentPlayer;
-        }
-        
-        if (marbles.size() != 2) {
-            return false;
-        }
-        
         int countActive = 0;
         for (Marble m : marbles) {
             if (m.getColour() == currentPlayer) {
-                countActive++;
+            	countActive++;
             }
         }
-        return countActive == 1;
+        return (countActive == 1);
     }
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-        if (marbles == null) {
-            throw new InvalidMarbleException("Marbles cannot be null.");
-        }
-
-        if (!validateMarbleSize(marbles)) {
-            throw new InvalidMarbleException("Invalid number of marbles.");
+        if (marbles == null || marbles.size() != 2) {
+           return;
         }
 
         if (!validateMarbleColours(marbles)) {
             throw new InvalidMarbleException("Invalid marble colours.");
         }
-
-        try {
-            if (marbles.size() == 1) {
-                Marble marble = marbles.get(0);
-                boardManager.moveBy(marble, 11, false);
-            } else {
+        if(marbles.size() ==1 ) {
+        	try {
                 Marble marble1 = marbles.get(0);
-                Marble marble2 = marbles.get(1);
-                
-                if (marble1.getColour() == gameManager.getActivePlayerColour()) {
-                    boardManager.swap(marble2, marble1);
-                } else {
-                    boardManager.swap(marble1, marble2);
-                }
+                boardManager.moveBy(marble1, 11,false);
+            } catch (IllegalMovementException | IllegalDestroyException e) {
+                throw new StandardActionException(e.getMessage());
             }
-        } catch (IllegalMovementException | IllegalDestroyException | IllegalSwapException e) {
+        }
+        if(marbles.size()==2) {
+        try {
+            Marble marble1 = marbles.get(0);
+            Marble marble2 = marbles.get(1);
+            boardManager.swap(marble1, marble2);
+        } catch (IllegalSwapException e) {
             throw new StandardActionException(e.getMessage());
         }
+        }
+        
     }
+    
+
+
+
+
 }
