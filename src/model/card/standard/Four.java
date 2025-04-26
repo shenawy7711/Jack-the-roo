@@ -27,7 +27,14 @@ public class Four  extends Standard {
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-        try {
+    	if (marbles == null || marbles.size() != 1) {
+            throw new InvalidMarbleException("four card requires exactly one marble.");
+        }
+
+        if (!validateMarbleColours(marbles)) {
+            throw new InvalidMarbleException("Invalid marble colours for four card.");
+        }
+    	try {
             boardManager.moveBy(marbles.get(0), -4, false);
         } catch (IllegalMovementException | IllegalDestroyException e) {
             throw new InvalidMarbleException(e.getMessage());

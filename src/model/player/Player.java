@@ -75,12 +75,19 @@ public class Player {
     }
 
     public void selectMarble(Marble marble) throws InvalidMarbleException {
-
-        if (selectedMarbles.contains(marble)) {
-            return; // already selected, do nothing
+        if (marble == null) {
+            throw new InvalidMarbleException("Cannot select a null marble.");
         }
-        selectedMarbles.add(marble);
+
+        if (selectedMarbles.size() >= 2) {
+            throw new InvalidMarbleException("Cannot select more than 2 marbles.");
+        }
+
+        if (!selectedMarbles.contains(marble)) {
+            selectedMarbles.add(marble);
+        }
     }
+
 
     public void deselectAll() {
         this.selectedCard = null;

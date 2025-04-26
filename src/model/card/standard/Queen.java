@@ -27,7 +27,13 @@ public class Queen extends Standard {
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-       
+    	if (marbles == null || marbles.size() != 1) {
+            throw new InvalidMarbleException("Five card requires exactly one marble.");
+        }
+
+        if (!validateMarbleColours(marbles)) {
+            throw new InvalidMarbleException("Invalid marble colours for Five card.");
+        }
     	if (marbles.isEmpty()) {
             try {
                 gameManager.discardCard();

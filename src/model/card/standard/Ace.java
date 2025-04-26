@@ -28,20 +28,18 @@ public class Ace extends Standard {
 
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-        if (!validateMarbleSize(marbles))
+        if (!validateMarbleSize(marbles)) {
             throw new InvalidMarbleException("Ace requires 0 or 1 marble to act.");
-        if (!validateMarbleColours(marbles))
-            throw new InvalidMarbleException("Marble colours invalid for Ace.");
+        }
+
+        
 
         if (marbles == null || marbles.isEmpty()) {
-            throw new StandardActionException("Cannot act with empty marbles list");
+            gameManager.fieldMarble(); // just field the marble
+            return; // STOP! Don't call moveBy
         }
 
-        try {
-            boardManager.moveBy(marbles.get(0), 1, false);
-        } catch (IllegalMovementException | IllegalDestroyException e) {
-            throw new StandardActionException(e.getMessage());
-        }
+        boardManager.moveBy(marbles.get(0), 1, false);
     }
 
 }

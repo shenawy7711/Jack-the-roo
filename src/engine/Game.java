@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Random;
 
 import engine.board.Board;
+import engine.board.Cell;
 import exception.CannotDiscardException;
 import exception.CannotFieldException;
 import exception.GameException;
@@ -76,11 +77,12 @@ public class Game implements GameManager {
         if (marble == null) {
             throw new InvalidMarbleException("Cannot select a null marble.");
         }
-        if (marble.getColour() != getActivePlayerColour()) {
+        if (!marble.getColour().equals(getActivePlayerColour())) {
             throw new InvalidMarbleException("Cannot select marble of different color.");
         }
         players.get(currentPlayerIndex).selectMarble(marble);
     }
+
 
 
     
@@ -161,20 +163,21 @@ public class Game implements GameManager {
     	}
     	return null;
     }
-public void discardCard(Colour colour) throws CannotDiscardException{
-    	for (int i=0;i<this.players.size();i++) {
-    		if (this.players.get(i).getColour()==colour) {
-    			if (this.players.get(i).getHand().size()<1)
-    	    		throw new CannotDiscardException();
-    			else {
-    				Random rand = new Random();
-    	    		this.players.get(i).getHand().remove(rand.nextInt(this.players.get(i).getHand().size() - 1));
-    			}
-    		}
-    			
-    		
-    	}
+    @Override
+    public void discardCard(Colour colour) throws CannotDiscardException {
+        for (Player player : players) {
+            if (player.getColour() == colour) {
+                if (player.getHand().isEmpty()) {
+                    throw new CannotDiscardException();
+                }
+                Random rand = new Random();
+                int randomIndex = rand.nextInt(player.getHand().size()); 
+                player.getHand().remove(randomIndex);
+                return;
+            }
+        }
     }
+
     
 	public void discardCard() throws CannotDiscardException {
 		ArrayList<Integer> candidates = new ArrayList<>();
@@ -197,19 +200,31 @@ public void discardCard(Colour colour) throws CannotDiscardException{
     
    
 
-    @Override
-    public void sendHome(Marble marble) {
-        if (marble == null) {
-            return; // or throw an exception if you prefer
-        }
+	@Override
+	public void sendHome(Marble marble) {
+	    if (marble == null) {
+	        return;
+	    }
 
-        // 1) Identify the marble's owner by color
-        Colour ownerColour = marble.getColour();
-        Player ownerPlayer = findPlayerByColour(ownerColour);
+	    // 1. Remove marble from the board (track cells)
+	    ArrayList<Cell> trackCells = board.getTrack();
+	    for (int i = 0; i < trackCells.size(); i++) {
+	        Cell cell = trackCells.get(i);
+	        if (cell.getMarble() != null && cell.getMarble().equals(marble)) {
+	            cell.setMarble(null);
+	            break;
+	        }
+	    }
 
-        // 2) Regain marble back to the owner's home zone
-        ownerPlayer.regainMarble(marble);
-    }
+	    // 2. Regain marble into owner's Home Zone
+	    Player owner = findPlayerByColour(marble.getColour());
+	    if (owner != null) {
+	        owner.regainMarble(marble);
+	    }
+	}
+	
+
+
     private Player findPlayerByColour(Colour colour) {
         for (Player p : players) {
             if (p.getColour() == colour) {
@@ -221,15 +236,28 @@ public void discardCard(Colour colour) throws CannotDiscardException{
     @Override
     public void fieldMarble() throws CannotFieldException, IllegalDestroyException {
         Player currentPlayer = players.get(currentPlayerIndex);
-        Marble marble = currentPlayer.getOneMarble();
+
+        Marble marble = null;
+
+        if (!currentPlayer.getMarbles().isEmpty()) {
+            marble = currentPlayer.getMarbles().get(0);
+        } else {
+            marble = currentPlayer.getOneMarble();
+        }
 
         if (marble == null) {
             throw new CannotFieldException("No marbles available to field.");
         }
 
         this.board.sendToBase(marble);
-        currentPlayer.getMarbles().remove(marble);
+
+        if (currentPlayer.getMarbles().contains(marble)) {
+            currentPlayer.getMarbles().remove(marble);
+        } else {
+            currentPlayer.getMarbles().remove(marble);
+        }
     }
+
 
 	@Override
 	public Colour getNextPlayerColour() {

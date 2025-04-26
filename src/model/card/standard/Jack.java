@@ -82,7 +82,7 @@ public class Jack extends Standard {
                 boardManager.swap(activeMarble, otherMarble);
             }
         } catch (IllegalMovementException | IllegalDestroyException | IllegalSwapException e) {
-            throw new StandardActionException(e.getMessage());
+            throw e;
         }
     }
 }

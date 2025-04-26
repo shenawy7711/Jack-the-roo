@@ -31,10 +31,10 @@ public class Ten extends Standard {
         }
         return true;
     }
-
+    // Discard a random card from the next player's hand.
     @Override
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-        if (marbles == null || marbles.isEmpty()) {
+    	if (marbles == null || marbles.isEmpty()) {
             try {
                 Colour nextPlayerColour = gameManager.getNextPlayerColour();
                 gameManager.discardCard(nextPlayerColour);
