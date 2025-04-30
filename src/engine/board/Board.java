@@ -207,11 +207,10 @@ public class Board implements BoardManager {
         if (path == null || path.isEmpty()) {
             throw new IllegalMovementException("Invalid path: path cannot be null or empty");
         }
-
-        Colour activePlayerColour = gameManager.getActivePlayerColour();
-        int encounteredMarbles = 0;
         Cell finalCell = path.get(path.size() - 1);
         boolean movingToSafeZone = finalCell.getCellType() == CellType.SAFE;
+        Colour activePlayerColour = gameManager.getActivePlayerColour();
+        int encounteredMarbles = 0;
 
         for (int step = 1; step < path.size(); step++) {
             Cell currentCell = path.get(step);
