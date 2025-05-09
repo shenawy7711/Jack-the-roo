@@ -29,24 +29,22 @@ public abstract class Card {
     public String getDescription() {
         return description;
     }
+    
+    public abstract void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException;
+    
     public boolean validateMarbleSize(ArrayList<Marble> marbles) {
-        
-        return marbles != null && marbles.size() == 1;
+        return marbles.size() == 1;
     }
     
     public boolean validateMarbleColours(ArrayList<Marble> marbles) {
-        if (marbles == null || marbles.isEmpty()) {
-            return false;
-        }
-        Colour currentPlayerColour = gameManager.getActivePlayerColour();
-        for (Marble m : marbles) {
-            if (m.getColour() != currentPlayerColour) {
-                return false;
+        Colour ownerColour = gameManager.getActivePlayerColour();
+        boolean sameColour = true;
+        for (Marble marble : marbles) {
+            if (marble.getColour() != ownerColour) {
+                sameColour = false;
             }
         }
-        return true;
+        return sameColour;
     }
-    public abstract void act(ArrayList<Marble> marbles) throws ActionException,
-    InvalidMarbleException;
     
 }

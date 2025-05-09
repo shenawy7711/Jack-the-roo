@@ -1,18 +1,16 @@
 package engine;
 
-import model.card.Card;
-import model.player.Player;
-import model.Colour;
+import exception.CannotDiscardException;
 import exception.CannotFieldException;
 import exception.IllegalDestroyException;
-import exception.CannotDiscardException;
+import model.Colour;
 import model.player.Marble;
 
 public interface GameManager {
-    void sendHome(Marble marble);
-    void fieldMarble() throws CannotFieldException, IllegalDestroyException;
-    void discardCard(Colour colour) throws CannotDiscardException;
-    void discardCard() throws CannotDiscardException;
-    Colour getActivePlayerColour();
-    Colour getNextPlayerColour();
+	public void sendHome(Marble marble);
+    public void fieldMarble() throws CannotFieldException, IllegalDestroyException;
+    public void discardCard(Colour colour) throws CannotDiscardException;
+    public void discardCard() throws CannotDiscardException;
+    public Colour getActivePlayerColour();
+    public Colour getNextPlayerColour();
 }

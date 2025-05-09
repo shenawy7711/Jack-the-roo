@@ -22,14 +22,14 @@ public class SafeZone {
     public ArrayList<Cell> getCells() {
         return this.cells;
     }
-
-
+    
     public boolean isFull() {
-        for (Cell cell : cells) {
-            if (cell.getMarble() == null) {
+        for (Cell cell : this.cells) {
+            if (cell.getMarble() == null) 
                 return false;
-            }
         }
+            
         return true;
     }
+
 }
