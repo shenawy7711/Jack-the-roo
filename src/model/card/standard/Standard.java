@@ -2,6 +2,11 @@ package model.card.standard;
 
 import engine.GameManager;
 import engine.board.BoardManager;
+<<<<<<< Updated upstream
+=======
+import exception.ActionException;
+import exception.InvalidMarbleException;
+>>>>>>> Stashed changes
 import model.card.Card;
 
 public class Standard extends Card {
@@ -21,4 +26,13 @@ public class Standard extends Card {
     public Suit getSuit() {
         return suit;
     }
+<<<<<<< Updated upstream
+=======
+
+    @Override
+    public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException{
+        this.boardManager.moveBy(marbles.get(0), rank, false);
+    }
+
+>>>>>>> Stashed changes
 }

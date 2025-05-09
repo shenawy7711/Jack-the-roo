@@ -55,5 +55,53 @@ public class Player {
     public Card getSelectedCard() {
         return selectedCard;
     }
+<<<<<<< Updated upstream
+=======
+    
+    public void regainMarble(Marble marble) {
+        this.marbles.add(marble);
+    }
+
+    public Marble getOneMarble() {
+        if(marbles.isEmpty())
+            return null;
+
+        return this.marbles.get(0);
+    }
+
+    public void selectCard(Card card) throws InvalidCardException {
+        if (!this.hand.contains(card)) 
+            throw new InvalidCardException("Card not in hand.");
+        
+        this.selectedCard = card;
+    }
+
+    public void selectMarble(Marble marble) throws InvalidMarbleException {
+        if (!this.selectedMarbles.contains(marble)) {
+            if(this.selectedMarbles.size() > 1)
+                throw new InvalidMarbleException("Cannot select more than 2 marbles.");
+            
+            selectedMarbles.add(marble);
+        }
+    }
+
+    public void deselectAll() {
+        this.selectedCard = null;
+        this.selectedMarbles.clear();
+    }
+
+    public void play() throws GameException {
+        if(selectedCard == null)
+            throw new InvalidCardException("Must select a card to play.");
+        
+        if(!this.selectedCard.validateMarbleSize(this.selectedMarbles))
+            throw new InvalidMarbleException("Invalid number of marbles selected for " + selectedCard.getName() + ".");
+        
+        if(!this.selectedCard.validateMarbleColours(this.selectedMarbles))
+            throw new InvalidMarbleException("Invalid marble colours selected for " + selectedCard.getName() + ".");
+        
+        this.selectedCard.act(this.selectedMarbles);
+    }
+>>>>>>> Stashed changes
 
 }
