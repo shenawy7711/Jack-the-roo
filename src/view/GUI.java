@@ -34,7 +34,6 @@ public class GUI extends Application{
 	private Button startbutton;
 	private HBox imagebox;
 	private ImageView image;
-	private ImageView bg;
 
 	@Override
 	public void start(Stage primarystage) throws Exception {
@@ -43,18 +42,18 @@ public class GUI extends Application{
 		primarystage.setScene(startscene);
 		primarystage.show();
 		primarystage.setResizable(false);
-		playernamelabel = new Label("Enter player name");
+		playernamelabel = new Label("Player name");
 		playernamelabel.setFont(new Font("Times new roman",24));
-		createcomp(playernamelabel, 180,350, 200, 50);
+		createcomp(playernamelabel, 240,350, 200, 50);
 		namefield = new TextField();
-		createcomp(namefield,400,360,200,40);
+		createcomp(namefield,390,360,200,40);
 		namefield.setPromptText("please enter a name");
 		namefield.getParent().requestFocus();
 		startbutton = new Button("Start Game");
 		createcomp(startbutton,300,450,200,50);
 		startbutton.setOnAction(this::handle);
 		imagebox = new HBox();
-		ImageView image = new ImageView("Logo.png");
+		image = new ImageView("Logo.png");
 		imagebox.getChildren().add(image);
 		createcomp(imagebox, 195, 20, 410, 275);
 		root.setBackground(new Background(new BackgroundFill(Color.ORANGE, CornerRadii.EMPTY, Insets.EMPTY)));
