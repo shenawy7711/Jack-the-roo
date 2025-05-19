@@ -18,6 +18,7 @@ import exception.InvalidMarbleException;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -37,6 +38,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Colour;
+import model.card.Card;
+import model.card.standard.Standard;
+import model.card.standard.Suit;
 import model.player.Marble;
 import model.player.Player;
 
@@ -60,7 +64,7 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 	private HBox hsafezone1;
 	private VBox vsafezone2;
 	private HBox hsafezone2;
-	private Label firepit;
+	private Button firepit;
 	private HBox homezone0;
 	private HBox homezone1;
 	private HBox homezone2;
@@ -73,6 +77,15 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 	private HBox htrack1right;
 	private Button clear;
 	private Button endturn;
+	private Label curplayer;
+
+	private HBox cardsbox;
+	private ArrayList<Button> cardsbuttons;
+	private Label firepitlabel;
+	private TextField splitdistance;
+	private Label splitdistancelabel;
+	private Label winner;
+	private Scene endscene;
 
 	@Override
 	public void start(Stage primarystage) throws Exception {
@@ -134,7 +147,7 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		htrack1left= new HBox();
 		createcomp(htrack1left,225,725,286,22);
 		htrack1right= new HBox();
-		createcomp(htrack1right,511,725,264,22);
+		createcomp(htrack1right,467,725,264,22);
 		vtrack1= new VBox();
 		createcomp(vtrack1,203,175,22,550);
 		htrack2= new HBox();
@@ -149,10 +162,14 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		createcomp(vsafezone2,489,175,22,88);
 		hsafezone2= new HBox();
 		createcomp(hsafezone2,687,439,88,22);
-		firepit= new Label();
+		firepitlabel= new Label();
 		ImageView fp = new ImageView("Fire Pit.png");
-		firepit.setGraphic(fp);
-		createcomp(firepit,430,300,150,49);
+		firepitlabel.setGraphic(fp);
+		createcomp(firepitlabel,430,300,150,49);
+		firepit = new Button();
+		firepit.setStyle("-fx-background-color: orange; -fx-text-fill: black;");
+		firepit.setFont(new Font("Times New Roman",25));
+		createcomp(firepit,405,350,200,200);
 		homezone0= new HBox();
 		createcomp(homezone0,550,775,88,22);
 		homezone1= new HBox();
@@ -195,11 +212,24 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		endturn.setStyle("-fx-background-color: orange; -fx-text-fill: black;");
 		endturn.setOnMouseEntered(e ->endturn.setStyle("-fx-background-color: black; -fx-text-fill: orange;"));
 		endturn.setOnMouseExited(e ->endturn.setStyle("-fx-background-color: orange; -fx-text-fill: black;"));
-		gameengine();
+		curplayer = new Label();
+		curplayer.setFont(F);
+		curplayer.setTextFill(Color.WHITE);
+		createcomp(curplayer,10,10,350,30);
+		cardsbox = new HBox();
+		createcomp(cardsbox,250,830,500,150);
+		splitdistancelabel = new Label("Split Distance");
+		splitdistancelabel.setFont(F);
+		splitdistancelabel.setTextFill(Color.WHITE);
+		createcomp(splitdistancelabel,830,775,200,30);
+		splitdistance= new TextField();
+		createcomp(splitdistance,830,830,60,50);
+		splitdistance.setPromptText("1-6");
+		splitdistance.getParent().requestFocus();
 	}
 	public void gameengine() {
 		htrack1left.getChildren().clear();
-		for(int i=12;i>=0;i--) {
+		for(int i=10;i>=0;i--) {
 			Cell x = game.getBoard().getTrack().get(i);
 			Marble m = x.getMarble();
 			ImageView colourimage = null;
@@ -226,7 +256,7 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 			htrack1left.getChildren().add(fulltrack.get(i));
 		}
 		htrack1right.getChildren().clear();
-		for(int i=99;i>=88;i--) {
+		for(int i=99;i>=86;i--) {
 			Cell x = game.getBoard().getTrack().get(i);
 			Marble m = x.getMarble();
 			ImageView colourimage = null;
@@ -251,7 +281,7 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 			htrack1right.getChildren().add(fulltrack.get(i));
 		}
 		vtrack1.getChildren().clear();
-		for(int i=37;i>=13;i--) {
+		for(int i=35;i>=11;i--) {
 			Cell x = game.getBoard().getTrack().get(i);
 			Marble m = x.getMarble();
 			ImageView colourimage = null;
@@ -278,7 +308,7 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 			vtrack1.getChildren().add(fulltrack.get(i));
 		}
 		htrack2.getChildren().clear();
-		for(int i=38;i<=62;i++) {
+		for(int i=36;i<=60;i++) {
 			Cell x = game.getBoard().getTrack().get(i);
 			Marble m = x.getMarble();
 			ImageView colourimage = null;
@@ -305,7 +335,7 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 			htrack2.getChildren().add(fulltrack.get(i));
 		}
 		vtrack2.getChildren().clear();
-		for(int i=63;i<=87;i++) {
+		for(int i=61;i<=85;i++) {
 			Cell x = game.getBoard().getTrack().get(i);
 			Marble m = x.getMarble();
 			ImageView colourimage = null;
@@ -523,7 +553,61 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		ai2.setText(a2);
 		String a3=game.getPlayers().get(3).getName()+" / Cards:"+game.getPlayers().get(3).getHand().size();
 		ai3.setText(a3);
+		String curptext ="Current Player Turn: "+ game.getActivePlayerColour();
+		curplayer.setText(curptext);
+		cardsbox.getChildren().clear();
+		cardsbuttons = new ArrayList<Button>();
+		for (int i = 0; i < game.getPlayers().get(0).getHand().size(); i++) {
+			Card c = game.getPlayers().get(0).getHand().get(i);
+			String card = "";
+			if (c instanceof Standard) {
+					Standard x = (Standard) c;
+					Suit s = x.getSuit();
+					if (s==Suit.SPADE) {
+						card = x.getName() + " / ♠"  ;
+					}
+					if (s==Suit.DIAMOND) {
+						card = x.getName() + " / ♦"  ;
+					}if (s==Suit.HEART) {
+						card = x.getName() + " / ♥"  ;
+					}
+					if (s==Suit.CLUB) {
+						card = x.getName() + " / ♣"  ;
+					}
+			}else {
+					card = c.getName();
+			}
+			Button b = new Button(card);
+			b.setPrefSize(150, 50);
+			b.setStyle("-fx-background-color: orange; -fx-text-fill: black;");
+			b.setOnMouseEntered(e ->b.setStyle("-fx-background-color: black; -fx-text-fill: orange;"));
+			b.setOnMouseExited(e ->b.setStyle("-fx-background-color: orange; -fx-text-fill: black;"));
+			b.setOnAction(this);
+			cardsbuttons.add(b);
+			cardsbox.getChildren().add(b);
+			if(game.getFirePit().size()>0) {
+				int j = game.getFirePit().size()-1;
+				firepit.setText(game.getFirePit().get(j).getName());
+			}
+		}
+		if (game.checkWin()!=null) {
+			winscene(game.checkWin());
+		}
+
 	}
+	private void winscene(Colour c) {
+		root = new AnchorPane();
+		endscene=new Scene(root,400,400);
+		primarystage.setScene(endscene);
+		primarystage.show();
+		primarystage.setResizable(false);
+		primarystage.setX(760);
+		primarystage.setY(340);
+		winner = new Label("Wohoooo "+ c +" won!!!");
+		winner.setFont(new Font("Times New Roman", 30));
+		createcomp(winner,0,0,400,400);
+	}
+
 	public void handle(ActionEvent e) {
 		if(e.getSource()==startbutton) {
 			if(namefield.getText().equals("")) {
@@ -531,8 +615,10 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 			}
 			else {
 				gamescene();
+				gameengine();
 			}
 		}
+
 		for(int i=0;i<fulltrack.size();i++) {
 			if (e.getSource()==fulltrack.get(i)) {
 				Player player = game.getPlayers().get(0);
@@ -547,43 +633,86 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 			game.deselectAll();
 		}
 		if (e.getSource() == endturn) {
-			Player x = game.getPlayers().get(0);
-			if (x.getSelectedCard() == null) {
-				int r = (int) (Math.random() * x.getHand().size());
-				try {
-					x.selectCard(x.getHand().get(r));
-				} catch (InvalidCardException e1) {
-					errormsg(e1.getMessage());
-				}
-			}
-			game.endPlayerTurn();
+		    Player x = game.getPlayers().get(0);
 
-			runCpuTurn(1);
+		    if (x.getSelectedCard() == null) {
+		        int r = (int) (Math.random() * x.getHand().size());
+		        try {
+		            x.selectCard(x.getHand().get(r));
+		        } catch (InvalidCardException e1) {
+		            errormsg(e1.getMessage());
+		            return;
+		        }
+		    }
+
+		    game.endPlayerTurn();
+		    endturn.setDisable(true); 
+
+		    PauseTransition pause = new PauseTransition(Duration.seconds(1));
+		    pause.setOnFinished(event -> {
+		        gameengine();
+		        runCpuTurn(1);
+		    });
+		    pause.play();
+
 		}
+
+		for (int i = 0; i < cardsbuttons.size(); i++) {
+			if (e.getSource() == cardsbuttons.get(i)) {
+				Card c = game.getPlayers().get(0).getHand().get(i);
+				try {
+					game.getPlayers().get(0).selectCard(c);
+
+					if (game.canPlayTurn()) {
+						game.playPlayerTurn();
+						game.endPlayerTurn();
+						gameengine();
+
+						PauseTransition pause = new PauseTransition(Duration.seconds(1));
+						pause.setOnFinished(ev -> runCpuTurn(1));
+						pause.play();
+					} else {
+						errormsg("You cannot play this card now.");
+						game.deselectAll();
+						gameengine();
+					}
+				} catch (Exception ex) {
+					errormsg(ex.getMessage());
+					game.deselectAll();
+					gameengine();
+				}
+				break;
+			}
+		}
+
 		gameengine();
 	}
 	private void runCpuTurn(int index) {
-		if (index > 3) {
-			gameengine();
-			return;
-		}
+	    if (index > 3) {
+	        gameengine();
+	        Platform.runLater(() -> endturn.setDisable(false)); // Always re-enable
+	        return;
+	    }
 
-		PauseTransition pause = new PauseTransition(Duration.seconds(1));
-		pause.setOnFinished(event -> {
-			if (game.canPlayTurn()) {
-				try {
-					game.playPlayerTurn();
-				} catch (GameException g) {
-					errormsg(g.getMessage());
-				}
-			}
-			game.endPlayerTurn();
-			gameengine(); 
+	    PauseTransition pause = new PauseTransition(Duration.seconds(1));
+	    pause.setOnFinished(event -> {
+	        try {
+	            if (game.canPlayTurn()) {
+	                game.playPlayerTurn();
+	            }
+	        } catch (GameException g) {
+	            errormsg(g.getMessage());
+	        }
 
-			runCpuTurn(index + 1); 
-		});
-		pause.play();
+	        game.endPlayerTurn();
+	        gameengine();
+	        runCpuTurn(index + 1); // Keep progressing CPUs
+	    });
+	    pause.play();
 	}
+
+
+
 	
 	public void createcomp(Region comp, int x, int y, int w, int h) {
 		comp.setLayoutX(x);
@@ -600,6 +729,7 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 	}
 	public static void main(String[] args) {
 		launch(args);
+		
 	}
 }
 
