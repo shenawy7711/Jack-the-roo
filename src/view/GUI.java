@@ -587,7 +587,9 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 			cardsbox.getChildren().add(b);
 			if(game.getFirePit().size()>0) {
 				int j = game.getFirePit().size()-1;
-				firepit.setText(game.getFirePit().get(j).getName());
+				if (game.getFirePit().get(j) != null) {
+					firepit.setText(game.getFirePit().get(j).getName());
+				}
 			}
 		}
 		if (game.checkWin()!=null) {
@@ -640,8 +642,7 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		        try {
 		            x.selectCard(x.getHand().get(r));
 		        } catch (InvalidCardException e1) {
-		            errormsg(e1.getMessage());
-		            return;
+		    
 		        }
 		    }
 
@@ -658,9 +659,6 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		        }
 		        game.endPlayerTurn();
 		    }
-
-		    endturn.setDisable(false);
-		    gameengine();
 		}
 
 
