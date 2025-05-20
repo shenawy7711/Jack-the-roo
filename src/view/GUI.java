@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import engine.Game;
 import engine.board.Cell;
+import exception.CannotDiscardException;
 import exception.GameException;
 import exception.InvalidCardException;
 import exception.InvalidMarbleException;
@@ -611,115 +612,120 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		createcomp(winner,0,0,400,400);
 	}
 
+
 	public void handle(ActionEvent e) {
-		if(e.getSource()==startbutton) {
-			if(namefield.getText().equals("")) {
-				errormsg("Please enter your name.");
-			}
-			else {
-				gamescene();
-				gameengine();
-			}
-		}
+	    Object src = e.getSource();
 
-		for(int i=0;i<fulltrack.size();i++) {
-			if (e.getSource()==fulltrack.get(i)) {
-				Player player = game.getPlayers().get(0);
-				try {
-					player.selectMarble(game.getBoard().getTrack().get(i).getMarble());
-				}catch(InvalidMarbleException x) {
-					errormsg(x.getMessage());
-				}
-			}
-		}
-		if(e.getSource()==clear) {
-			game.deselectAll();
-		}
-		if (e.getSource() == endturn) {
-		    Player x = game.getPlayers().get(0);
+	    if (src == startbutton) {
+	        if (namefield.getText().isEmpty()) {
+	            errormsg("Please enter your name.");
+	            return;
+	        }
+	        gamescene();
+	        gameengine();
+	        return;
+	    }
 
-		    if (x.getSelectedCard() == null) {
-		        int r = (int) (Math.random() * x.getHand().size());
-		        try {
-		            x.selectCard(x.getHand().get(r));
-		        } catch (InvalidCardException e1) {
-		    
-		        }
-		    }
+	    if (src == clear) {
+	        game.deselectAll();
+	        gameengine();
+	        return;
+	    }
 
-		    game.endPlayerTurn();
+	    if (src == endturn) {
+	        Player player = game.getPlayers().get(0);
+	        if (player.getHand().isEmpty()) {
+	            game.endPlayerTurn();
+	        } else {
+	            try {
+	                int rand = (int) (Math.random() * player.getHand().size());
+	                player.selectCard(player.getHand().get(rand));
+	                game.discardCard(player.getColour());
+	                game.endPlayerTurn();
+	            } catch (Exception ex) {
+	                errormsg("Cannot discard card: " + ex.getMessage());
+	                return;
+	            }
+	        }
+	        playCpuTurns();
+	        gameengine();
+	        return;
+	    }
 
-		    // CPU turns instantly
-		    for (int i = 1; i <= 3; i++) {
-		        if (game.canPlayTurn()) {
-		            try {
-		                game.playPlayerTurn();
-		            } catch (GameException g) {
-		                errormsg(g.getMessage());
-		            }
-		        }
-		        game.endPlayerTurn();
-		    }
-		}
+	    for (int i = 0; i < fulltrack.size(); i++) {
+	        if (src == fulltrack.get(i)) {
+	            Marble m = game.getBoard().getTrack().get(i).getMarble();
+	            if (m != null && isMarbleTrapped(m)) {
+	                errormsg("This marble is in a trap cell and cannot move.");
+	                return;
+	            }
+	            try {
+	                game.getPlayers().get(0).selectMarble(m);
+	            } catch (InvalidMarbleException ex) {
+	                errormsg(ex.getMessage());
+	            }
+	            gameengine();
+	            return;
+	        }
+	    }
 
+	    for (int i = 0; i < cardsbuttons.size(); i++) {
+	        if (src == cardsbuttons.get(i)) {
+	            Card c = game.getPlayers().get(0).getHand().get(i);
+	            try {
+	                game.getPlayers().get(0).selectCard(c);
 
-		for (int i = 0; i < cardsbuttons.size(); i++) {
-			if (e.getSource() == cardsbuttons.get(i)) {
-				Card c = game.getPlayers().get(0).getHand().get(i);
-				try {
-				    game.getPlayers().get(0).selectCard(c);
-				    if (c.getName().equalsIgnoreCase("Seven")) {
-				        try {
-				            int split = Integer.parseInt(splitdistance.getText().trim());
-				            game.editSplitDistance(split);  
-				        } catch (NumberFormatException ex) {
-				            errormsg("Split distance must be a number between 1 and 6.");
-				            game.deselectAll();
-				            gameengine();
-				            return;
-				        } catch (SplitOutOfRangeException ex) {
-				            errormsg("Split distance must be between 1 and 6.");
-				            game.deselectAll();
-				            gameengine();
-				            return;
-				        }
-				    }
+	                if (c.getName().equals("Seven")) {
+	                    try {
+	                        int split = Integer.parseInt(splitdistance.getText());
+	                        game.editSplitDistance(split);
+	                    } catch (Exception ex) {
+	                        errormsg("Please enter a valid number between 1-6 for split distance.");
+	                        game.deselectAll();
+	                        return;
+	                    }
+	                }
 
-				    if (game.canPlayTurn()) {
-				        game.playPlayerTurn();
-				        game.endPlayerTurn();
-				        gameengine();
+	                if (!game.canPlayTurn()) {
+	                    errormsg("You cannot play this card now.");
+	                    game.deselectAll();
+	                    return;
+	                }
 
-				        for (int j = 1; j <= 3; j++) {
-				            if (game.canPlayTurn()) {
-				                try {
-				                    game.playPlayerTurn();
-				                } catch (GameException g) {
-				                    errormsg(g.getMessage());
-				                }
-				            }
-				            game.endPlayerTurn();
-				        }
+	                game.playPlayerTurn();
+	                game.endPlayerTurn();
+	                playCpuTurns();
 
-				        gameengine();
-				        endturn.setDisable(false);
+	            } catch (Exception ex) {
+	                errormsg(ex.getMessage());
+	                game.deselectAll();
+	            }
+	            gameengine();
+	            return;
+	        }
+	    }
 
-				    } else {
-				        errormsg("You cannot play this card now.");
-				        game.deselectAll();
-				        gameengine();
-				    }
-
-				} catch (Exception ex) {
-				    errormsg(ex.getMessage());
-				    game.deselectAll();
-				    gameengine();
-				}
-
-		}
-		}
-		gameengine();
+	    gameengine();
 	}
+
+
+
+	private void playCpuTurns() {
+	    for (int i = 1; i <= 3; i++) {
+	        if (game.canPlayTurn()) {
+	            try {
+	                game.playPlayerTurn();
+	            } catch (GameException ex) {
+	                errormsg(ex.getMessage());
+	            }
+	        }
+	        game.endPlayerTurn();
+	    }
+	}
+
+
+
+
 
 	
 	public void createcomp(Region comp, int x, int y, int w, int h) {
@@ -729,6 +735,15 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		comp.setPrefHeight(h);
 		root.getChildren().add(comp);
 	}
+	private boolean isMarbleTrapped(Marble marble) {
+	    for (Cell cell : game.getBoard().getTrack()) {
+	        if (cell.getMarble() == marble && cell.isTrap()) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
 	public void errormsg(String msg) {
 		Alert a = new Alert(AlertType.ERROR);
 		a.setHeaderText("Oops, something is balabizoo!");
@@ -740,4 +755,3 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		
 	}
 }
-
