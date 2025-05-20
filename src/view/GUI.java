@@ -15,6 +15,7 @@ import engine.board.Cell;
 import exception.GameException;
 import exception.InvalidCardException;
 import exception.InvalidMarbleException;
+import exception.SplitOutOfRangeException;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import javafx.application.Application;
@@ -666,39 +667,57 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 			if (e.getSource() == cardsbuttons.get(i)) {
 				Card c = game.getPlayers().get(0).getHand().get(i);
 				try {
-					game.getPlayers().get(0).selectCard(c);
+				    game.getPlayers().get(0).selectCard(c);
+				    if (c.getName().equalsIgnoreCase("Seven")) {
+				        try {
+				            int split = Integer.parseInt(splitdistance.getText().trim());
+				            game.editSplitDistance(split);  
+				        } catch (NumberFormatException ex) {
+				            errormsg("Split distance must be a number between 1 and 6.");
+				            game.deselectAll();
+				            gameengine();
+				            return;
+				        } catch (SplitOutOfRangeException ex) {
+				            errormsg("Split distance must be between 1 and 6.");
+				            game.deselectAll();
+				            gameengine();
+				            return;
+				        }
+				    }
 
-					if (game.canPlayTurn()) {
-						game.playPlayerTurn();
-						game.endPlayerTurn();
-						gameengine();
-						for (int j = 1; j <= 3; j++) {
-						    if (game.canPlayTurn()) {
-						        try {
-						            game.playPlayerTurn();
-						        } catch (GameException g) {
-						            errormsg(g.getMessage());
-						        }
-						    }
-						    game.endPlayerTurn();
-						}
-						gameengine();
-						endturn.setDisable(false);
+				    if (game.canPlayTurn()) {
+				        game.playPlayerTurn();
+				        game.endPlayerTurn();
+				        gameengine();
 
-					} else {
-						errormsg("You cannot play this card now.");
-						game.deselectAll();
-						gameengine();
-					}
+				        for (int j = 1; j <= 3; j++) {
+				            if (game.canPlayTurn()) {
+				                try {
+				                    game.playPlayerTurn();
+				                } catch (GameException g) {
+				                    errormsg(g.getMessage());
+				                }
+				            }
+				            game.endPlayerTurn();
+				        }
+
+				        gameengine();
+				        endturn.setDisable(false);
+
+				    } else {
+				        errormsg("You cannot play this card now.");
+				        game.deselectAll();
+				        gameengine();
+				    }
+
 				} catch (Exception ex) {
-					errormsg(ex.getMessage());
-					game.deselectAll();
-					gameengine();
+				    errormsg(ex.getMessage());
+				    game.deselectAll();
+				    gameengine();
 				}
-				break;
-			}
-		}
 
+		}
+		}
 		gameengine();
 	}
 
