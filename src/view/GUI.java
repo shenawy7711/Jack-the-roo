@@ -646,16 +646,23 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		    }
 
 		    game.endPlayerTurn();
-		    endturn.setDisable(true); 
 
-		    PauseTransition pause = new PauseTransition(Duration.seconds(1));
-		    pause.setOnFinished(event -> {
-		        gameengine();
-		        runCpuTurn(1);
-		    });
-		    pause.play();
+		    // CPU turns instantly
+		    for (int i = 1; i <= 3; i++) {
+		        if (game.canPlayTurn()) {
+		            try {
+		                game.playPlayerTurn();
+		            } catch (GameException g) {
+		                errormsg(g.getMessage());
+		            }
+		        }
+		        game.endPlayerTurn();
+		    }
 
+		    endturn.setDisable(false);
+		    gameengine();
 		}
+
 
 		for (int i = 0; i < cardsbuttons.size(); i++) {
 			if (e.getSource() == cardsbuttons.get(i)) {
@@ -667,10 +674,19 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 						game.playPlayerTurn();
 						game.endPlayerTurn();
 						gameengine();
+						for (int j = 1; j <= 3; j++) {
+						    if (game.canPlayTurn()) {
+						        try {
+						            game.playPlayerTurn();
+						        } catch (GameException g) {
+						            errormsg(g.getMessage());
+						        }
+						    }
+						    game.endPlayerTurn();
+						}
+						gameengine();
+						endturn.setDisable(false);
 
-						PauseTransition pause = new PauseTransition(Duration.seconds(1));
-						pause.setOnFinished(ev -> runCpuTurn(1));
-						pause.play();
 					} else {
 						errormsg("You cannot play this card now.");
 						game.deselectAll();
@@ -687,31 +703,6 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 
 		gameengine();
 	}
-	private void runCpuTurn(int index) {
-	    if (index > 3) {
-	        gameengine();
-	        Platform.runLater(() -> endturn.setDisable(false)); // Always re-enable
-	        return;
-	    }
-
-	    PauseTransition pause = new PauseTransition(Duration.seconds(1));
-	    pause.setOnFinished(event -> {
-	        try {
-	            if (game.canPlayTurn()) {
-	                game.playPlayerTurn();
-	            }
-	        } catch (GameException g) {
-	            errormsg(g.getMessage());
-	        }
-
-	        game.endPlayerTurn();
-	        gameengine();
-	        runCpuTurn(index + 1); // Keep progressing CPUs
-	    });
-	    pause.play();
-	}
-
-
 
 	
 	public void createcomp(Region comp, int x, int y, int w, int h) {
