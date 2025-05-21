@@ -1,13 +1,11 @@
 package engine;
-//dwd
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 import engine.board.Board;
-<<<<<<< Updated upstream
-=======
 import engine.board.SafeZone;
 import exception.CannotDiscardException;
 import exception.CannotFieldException;
@@ -16,7 +14,6 @@ import exception.IllegalDestroyException;
 import exception.InvalidCardException;
 import exception.InvalidMarbleException;
 import exception.SplitOutOfRangeException;
->>>>>>> Stashed changes
 import model.Colour;
 import model.card.Card;
 import model.card.Deck;
@@ -67,8 +64,6 @@ public class Game implements GameManager {
     public ArrayList<Card> getFirePit() {
         return firePit;
     }
-<<<<<<< Updated upstream
-=======
     
     public void selectCard(Card card) throws InvalidCardException {
         players.get(currentPlayerIndex).selectCard(card);
@@ -183,6 +178,5 @@ public class Game implements GameManager {
     public Colour getNextPlayerColour() {
         return players.get((currentPlayerIndex + 1) % 4).getColour();
     }
->>>>>>> Stashed changes
     
 }

@@ -82,8 +82,6 @@ public class Deck {
         cardsPool.subList(0, 4).clear();
         return cards;
     }
-<<<<<<< Updated upstream
-=======
     
     public static int getPoolSize() {
 		return cardsPool.size();
@@ -92,7 +90,6 @@ public class Deck {
     public static void refillPool(ArrayList<Card> cards) {
         cardsPool.addAll(cards);
     }
->>>>>>> Stashed changes
 
 }
 

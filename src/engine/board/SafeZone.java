@@ -22,8 +22,6 @@ public class SafeZone {
     public ArrayList<Cell> getCells() {
         return this.cells;
     }
-<<<<<<< Updated upstream
-=======
     
     public boolean isFull() {
         for (Cell cell : this.cells) {
@@ -33,6 +31,5 @@ public class SafeZone {
             
         return true;
     }
->>>>>>> Stashed changes
 
 }

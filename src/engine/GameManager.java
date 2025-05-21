@@ -1,9 +1,5 @@
 package engine;
 
-<<<<<<< Updated upstream
-public interface GameManager {
-    
-=======
 import exception.CannotDiscardException;
 import exception.CannotFieldException;
 import exception.IllegalDestroyException;
@@ -17,5 +13,4 @@ public interface GameManager {
     public void discardCard() throws CannotDiscardException;
     public Colour getActivePlayerColour();
     public Colour getNextPlayerColour();
->>>>>>> Stashed changes
 }

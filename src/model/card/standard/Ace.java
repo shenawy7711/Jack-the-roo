@@ -1,13 +1,12 @@
 package model.card.standard;
 
+import java.util.ArrayList;
+
 import engine.GameManager;
 import engine.board.BoardManager;
-<<<<<<< Updated upstream
-=======
 import exception.ActionException;
 import exception.InvalidMarbleException;
 import model.player.Marble;
->>>>>>> Stashed changes
 
 
 public class Ace extends Standard {
@@ -16,8 +15,6 @@ public class Ace extends Standard {
         super(name, description, 1, suit, boardManager, gameManager);
     }
 
-<<<<<<< Updated upstream
-=======
     @Override
     public boolean validateMarbleSize(ArrayList<Marble> marbles) {
         return marbles.isEmpty() || super.validateMarbleSize(marbles);
@@ -32,5 +29,4 @@ public class Ace extends Standard {
             super.act(marbles);
     }
     
->>>>>>> Stashed changes
 }

@@ -1,9 +1,5 @@
 package engine.board;
 
-<<<<<<< Updated upstream
-public interface BoardManager { 
-    public int getSplitDistance();
-=======
 import java.util.ArrayList;
 
 import exception.CannotFieldException;
@@ -21,5 +17,4 @@ public interface BoardManager {
     public void sendToBase(Marble marble) throws CannotFieldException, IllegalDestroyException;
     public void sendToSafe(Marble marble) throws InvalidMarbleException;
     public ArrayList<Marble> getActionableMarbles();
->>>>>>> Stashed changes
 }

@@ -1,14 +1,14 @@
 package model.player;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import engine.board.BoardManager;
+import exception.GameException;
 import model.Colour;
+import model.card.Card;
 
 public class CPU extends Player {
-<<<<<<< Updated upstream
-    
-    @SuppressWarnings("unused")
-=======
->>>>>>> Stashed changes
 	private final BoardManager boardManager;
 
     public CPU(String name, Colour colour, BoardManager boardManager) {
@@ -16,8 +16,6 @@ public class CPU extends Player {
         this.boardManager = boardManager;
     }
 
-<<<<<<< Updated upstream
-=======
     @Override
     public void play() throws GameException {
         // Retrieve a list of actionable marbles from the board manager.
@@ -110,5 +108,4 @@ public class CPU extends Player {
             this.selectCard(this.getHand().get(0));
     }
     
->>>>>>> Stashed changes
 }

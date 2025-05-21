@@ -55,8 +55,6 @@ public class Player {
     public Card getSelectedCard() {
         return selectedCard;
     }
-<<<<<<< Updated upstream
-=======
     
     public void regainMarble(Marble marble) {
         this.marbles.add(marble);
@@ -102,6 +100,5 @@ public class Player {
         
         this.selectedCard.act(this.selectedMarbles);
     }
->>>>>>> Stashed changes
 
 }
