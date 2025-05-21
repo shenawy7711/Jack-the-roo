@@ -7,6 +7,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -290,12 +294,34 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 	        ImageView img = getMarbleImage(m);
 	        img.setFitWidth(22);
 	        img.setFitHeight(22);
-	        img.setPreserveRatio(false);
-	        fulltrack.get(i).setGraphic(img);
-	        fulltrack.get(i).setPadding(Insets.EMPTY);
-	        pane.getChildren().add(fulltrack.get(i));
+
+	        Button b = new Button();
+	        b.setGraphic(img);
+	        b.setPadding(Insets.EMPTY);
+	        b.setPrefSize(22, 22);
+	        final int index = i;
+	        b.setOnAction(e -> handleTrackButton(index));
+	        pane.getChildren().add(b);
 	    }
 	}
+	
+	private void handleTrackButton(int i) {
+	    Marble m = game.getBoard().getTrack().get(i).getMarble();
+	    if (m != null && isMarbleTrapped(m)) {
+	        errormsg("This marble is in a trap cell and cannot move.");
+	        return;
+	    }
+	    try {
+	        game.getPlayers().get(0).selectMarble(m);
+	        if (!selectedMarbles.contains(m))
+	            selectedMarbles.add(m);
+	    } catch (InvalidMarbleException ex) {
+	        errormsg(ex.getMessage());
+	        return;
+	    }
+	    gameengine();
+	}
+
 
 	private void updateSafeZone(Pane pane, int index) {
 	    pane.getChildren().clear();
@@ -498,22 +524,37 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 
 
 	private void playCpuTurns() {
-	    for (int i = 1; i <= 3; i++) {
+	    playCpuTurn(1);
+	}
+
+	private void playCpuTurn(int aiIndex) {
+	    if (aiIndex > 3) {
+	        gameengine(); // Final update after all CPUs are done
+	        return;
+	    }
+
+	    PauseTransition pause = new PauseTransition(Duration.seconds(3)); // 1-second delay
+	    pause.setOnFinished(event -> {
 	        try {
 	            if (game.canPlayTurn()) {
 	                game.playPlayerTurn();
 	            }
 	        } catch (Exception ex) {
-	            errormsg("CPU " + i + " failed to play: " + ex.getMessage());
+	            errormsg("CPU " + aiIndex + " failed to play: " + ex.getMessage());
 	        } finally {
 	            try {
 	                game.endPlayerTurn();
 	            } catch (Exception ex) {
-	                errormsg("Failed to end CPU " + i + "'s turn: " + ex.getMessage());
+	                errormsg("Failed to end CPU " + aiIndex + "'s turn: " + ex.getMessage());
 	            }
+	            gameengine(); // Update UI after this AI's move
+	            playCpuTurn(aiIndex + 1); // Move to the next AI
 	        }
-	    }
+	    });
+
+	    pause.play();
 	}
+
 
 
 
