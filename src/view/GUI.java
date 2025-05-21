@@ -12,15 +12,12 @@ import java.util.ArrayList;
 
 import engine.Game;
 import engine.board.Cell;
-import exception.CannotDiscardException;
 import exception.GameException;
+import exception.IllegalSwapException;
 import exception.InvalidCardException;
 import exception.InvalidMarbleException;
 import exception.SplitOutOfRangeException;
-import javafx.animation.PauseTransition;
-import javafx.util.Duration;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -34,6 +31,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -41,6 +39,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Colour;
 import model.card.Card;
+import model.card.standard.Jack;
 import model.card.standard.Standard;
 import model.card.standard.Suit;
 import model.player.Marble;
@@ -230,375 +229,130 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		splitdistance.getParent().requestFocus();
 	}
 	public void gameengine() {
-		htrack1left.getChildren().clear();
-		for(int i=10;i>=0;i--) {
-			Cell x = game.getBoard().getTrack().get(i);
-			Marble m = x.getMarble();
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			colourimage.setPreserveRatio(false);
-			fulltrack.get(i).setGraphic(colourimage);
-			fulltrack.get(i).setPadding(Insets.EMPTY);
-			htrack1left.getChildren().add(fulltrack.get(i));
-		}
-		htrack1right.getChildren().clear();
-		for(int i=99;i>=86;i--) {
-			Cell x = game.getBoard().getTrack().get(i);
-			Marble m = x.getMarble();
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setPreserveRatio(false);
-			fulltrack.get(i).setGraphic(colourimage);
-			fulltrack.get(i).setPadding(Insets.EMPTY);
-			htrack1right.getChildren().add(fulltrack.get(i));
-		}
-		vtrack1.getChildren().clear();
-		for(int i=35;i>=11;i--) {
-			Cell x = game.getBoard().getTrack().get(i);
-			Marble m = x.getMarble();
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			colourimage.setPreserveRatio(false);
-			fulltrack.get(i).setGraphic(colourimage);
-			fulltrack.get(i).setPadding(Insets.EMPTY);
-			vtrack1.getChildren().add(fulltrack.get(i));
-		}
-		htrack2.getChildren().clear();
-		for(int i=36;i<=60;i++) {
-			Cell x = game.getBoard().getTrack().get(i);
-			Marble m = x.getMarble();
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			colourimage.setPreserveRatio(false);
-			fulltrack.get(i).setGraphic(colourimage);
-			fulltrack.get(i).setPadding(Insets.EMPTY);
-			htrack2.getChildren().add(fulltrack.get(i));
-		}
-		vtrack2.getChildren().clear();
-		for(int i=61;i<=85;i++) {
-			Cell x = game.getBoard().getTrack().get(i);
-			Marble m = x.getMarble();
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			colourimage.setPreserveRatio(false);
-			fulltrack.get(i).setGraphic(colourimage);
-			fulltrack.get(i).setPadding(Insets.EMPTY);
-			vtrack2.getChildren().add(fulltrack.get(i));
-		}
-		vsafezone1.getChildren().clear();
-		for(int i=0;i<4;i++) {
-			Marble m =game.getBoard().getSafeZones().get(0).getCells().get(i).getMarble();
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			vsafezone1.getChildren().add(colourimage);
-		}
-		hsafezone1.getChildren().clear();
-		for(int i=0;i<4;i++) {
-			Marble m =game.getBoard().getSafeZones().get(1).getCells().get(i).getMarble();
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			hsafezone1.getChildren().add(colourimage);
-		}
-		vsafezone2.getChildren().clear();
-		for(int i=0;i<4;i++) {
-			Marble m =game.getBoard().getSafeZones().get(2).getCells().get(i).getMarble();
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			vsafezone2.getChildren().add(colourimage);
-		}
-		hsafezone2.getChildren().clear();
-		for(int i=0;i<4;i++) {
-			Marble m =game.getBoard().getSafeZones().get(3).getCells().get(i).getMarble();
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			hsafezone2.getChildren().add(colourimage);
-		}
-		homezone0.getChildren().clear();
-		for (int i = 0; i <game.getPlayers().get(0).getMarbles().size(); i++) {
-			Marble m = game.getPlayers().get(0).getMarbles().get(i);
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			homezone0.getChildren().add(colourimage);
-		}
-		homezone1.getChildren().clear();
-		for (int i = 0; i <game.getPlayers().get(1).getMarbles().size(); i++) {
-			Marble m = game.getPlayers().get(1).getMarbles().get(i);
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			homezone1.getChildren().add(colourimage);
-		}
-		homezone2.getChildren().clear();
-		for (int i = 0; i <game.getPlayers().get(2).getMarbles().size(); i++) {
-			Marble m = game.getPlayers().get(2).getMarbles().get(i);
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			homezone2.getChildren().add(colourimage);
-		}
-		homezone3.getChildren().clear();
-		for (int i = 0; i <game.getPlayers().get(3).getMarbles().size(); i++) {
-			Marble m = game.getPlayers().get(3).getMarbles().get(i);
-			ImageView colourimage = null;
-			if (m==null) {
-				colourimage= new ImageView("Empty.png");
-			}
-			else if(m.getColour()==Colour.BLUE) {
-				colourimage= new ImageView("Blue.png");
-			}
-			else if(m.getColour()==Colour.GREEN) {
-				colourimage= new ImageView("Green.png");
-			}
-			else if(m.getColour()==Colour.RED) {
-				colourimage= new ImageView("Red.png");
-			}
-			else if(m.getColour()==Colour.YELLOW) {
-				colourimage= new ImageView("Yellow.png");
-			}
-			colourimage.setFitWidth(22);
-			colourimage.setFitHeight(22);
-			homezone3.getChildren().add(colourimage);
-		}
-		String r=game.getPlayers().get(0).getName()+" / Cards:"+game.getPlayers().get(0).getHand().size();
-		realplayer.setText(r);
-		String a1=game.getPlayers().get(1).getName()+" / Cards:"+game.getPlayers().get(1).getHand().size();
-		ai1.setText(a1);
-		String a2=game.getPlayers().get(2).getName()+" / Cards:"+game.getPlayers().get(2).getHand().size();
-		ai2.setText(a2);
-		String a3=game.getPlayers().get(3).getName()+" / Cards:"+game.getPlayers().get(3).getHand().size();
-		ai3.setText(a3);
-		String curptext ="Current Player Turn: "+ game.getActivePlayerColour();
-		curplayer.setText(curptext);
-		cardsbox.getChildren().clear();
-		cardsbuttons = new ArrayList<Button>();
-		for (int i = 0; i < game.getPlayers().get(0).getHand().size(); i++) {
-			Card c = game.getPlayers().get(0).getHand().get(i);
-			String card = "";
-			if (c instanceof Standard) {
-					Standard x = (Standard) c;
-					Suit s = x.getSuit();
-					if (s==Suit.SPADE) {
-						card = x.getName() + " / ♠"  ;
-					}
-					if (s==Suit.DIAMOND) {
-						card = x.getName() + " / ♦"  ;
-					}if (s==Suit.HEART) {
-						card = x.getName() + " / ♥"  ;
-					}
-					if (s==Suit.CLUB) {
-						card = x.getName() + " / ♣"  ;
-					}
-			}else {
-					card = c.getName();
-			}
-			Button b = new Button(card);
-			b.setPrefSize(150, 50);
-			b.setStyle("-fx-background-color: orange; -fx-text-fill: black;");
-			b.setOnMouseEntered(e ->b.setStyle("-fx-background-color: black; -fx-text-fill: orange;"));
-			b.setOnMouseExited(e ->b.setStyle("-fx-background-color: orange; -fx-text-fill: black;"));
-			b.setOnAction(this);
-			cardsbuttons.add(b);
-			cardsbox.getChildren().add(b);
-			if(game.getFirePit().size()>0) {
-				int j = game.getFirePit().size()-1;
-				if (game.getFirePit().get(j) != null) {
-					firepit.setText(game.getFirePit().get(j).getName());
-				}
-			}
-		}
-		if (game.checkWin()!=null) {
-			winscene(game.checkWin());
-		}
+	    updateTrackSection(htrack1left, 10, 0);
+	    updateTrackSection(htrack1right, 99, 86);
+	    updateTrackSection(vtrack1, 35, 11);
+	    updateTrackSection(htrack2, 36, 60);
+	    updateTrackSection(vtrack2, 61, 85);
 
+	    updateSafeZone(vsafezone1, 0);
+	    updateSafeZone(hsafezone1, 1);
+	    updateSafeZone(vsafezone2, 2);
+	    updateSafeZone(hsafezone2, 3);
+
+	    updateHomeZone(homezone0, 0);
+	    updateHomeZone(homezone1, 1);
+	    updateHomeZone(homezone2, 2);
+	    updateHomeZone(homezone3, 3);
+
+	    // Labels
+	    updatePlayerLabels();
+	    updateCurrentPlayerLabel();
+
+	    // Fire pit and cards
+	    firepit.setText(game.getFirePit().isEmpty() ? "" : game.getFirePit().get(game.getFirePit().size() - 1).getName());
+
+	    cardsbox.getChildren().clear();
+	    cardsbuttons = new ArrayList<>();
+
+	    // Make sure player turn is correct before accessing hand
+	    Player current = game.getPlayers().get(0);
+	    ArrayList<Card> hand = current.getHand();
+	    if (hand == null || hand.isEmpty()) return;
+
+	    for (Card c : hand) {
+	        String label = (c instanceof Standard) ? c.getName() + " / " + getSuitSymbol(((Standard) c).getSuit()) : c.getName();
+	        Button b = new Button(label);
+	        b.setPrefSize(150, 50);
+	        b.setStyle("-fx-background-color: orange; -fx-text-fill: black;");
+	        b.setOnMouseEntered(e -> b.setStyle("-fx-background-color: black; -fx-text-fill: orange;"));
+	        b.setOnMouseExited(e -> b.setStyle("-fx-background-color: orange; -fx-text-fill: black;"));
+	        b.setOnAction(this);
+	        cardsbuttons.add(b);
+	        cardsbox.getChildren().add(b);
+	    }
+
+	    if (game.checkWin() != null) {
+	        winscene(game.checkWin());
+	    }
 	}
+
+
+	// Helper methods
+
+	private void updateTrackSection(Pane pane, int from, int to) {
+	    pane.getChildren().clear();
+	    int step = from < to ? 1 : -1;
+
+	    for (int i = from; i != to + step; i += step) {
+	        Cell x = game.getBoard().getTrack().get(i);
+	        Marble m = x.getMarble();
+	        ImageView img = getMarbleImage(m);
+	        img.setFitWidth(22);
+	        img.setFitHeight(22);
+	        img.setPreserveRatio(false);
+	        fulltrack.get(i).setGraphic(img);
+	        fulltrack.get(i).setPadding(Insets.EMPTY);
+	        pane.getChildren().add(fulltrack.get(i));
+	    }
+	}
+
+	private void updateSafeZone(Pane pane, int index) {
+	    pane.getChildren().clear();
+	    for (int i = 0; i < 4; i++) {
+	        Marble m = game.getBoard().getSafeZones().get(index).getCells().get(i).getMarble();
+	        ImageView img = getMarbleImage(m);
+	        img.setFitWidth(22);
+	        img.setFitHeight(22);
+	        pane.getChildren().add(img);
+	    }
+	}
+
+	private void updateHomeZone(Pane pane, int playerIndex) {
+	    pane.getChildren().clear();
+	    for (Marble m : game.getPlayers().get(playerIndex).getMarbles()) {
+	        ImageView img = getMarbleImage(m);
+	        img.setFitWidth(22);
+	        img.setFitHeight(22);
+	        pane.getChildren().add(img);
+	    }
+	}
+
+	private ImageView getMarbleImage(Marble m) {
+	    if (m == null) return new ImageView("Empty.png");
+
+	    switch (m.getColour()) {
+	        case BLUE: return new ImageView("Blue.png");
+	        case GREEN: return new ImageView("Green.png");
+	        case RED: return new ImageView("Red.png");
+	        case YELLOW: return new ImageView("Yellow.png");
+	        default: return new ImageView("Empty.png");
+	    }
+	}
+
+	private void updatePlayerLabels() {
+	    realplayer.setText(game.getPlayers().get(0).getName() + " / Cards:" + game.getPlayers().get(0).getHand().size());
+	    ai1.setText(game.getPlayers().get(1).getName() + " / Cards:" + game.getPlayers().get(1).getHand().size());
+	    ai2.setText(game.getPlayers().get(2).getName() + " / Cards:" + game.getPlayers().get(2).getHand().size());
+	    ai3.setText(game.getPlayers().get(3).getName() + " / Cards:" + game.getPlayers().get(3).getHand().size());
+	}
+
+	private void updateCurrentPlayerLabel() {
+	    curplayer.setText("Current Player Turn: " + game.getActivePlayerColour());
+	}
+
+	private String getSuitSymbol(Suit s) {
+	    switch (s) {
+	        case SPADE: return "♠";
+	        case DIAMOND: return "♦";
+	        case HEART: return "♥";
+	        case CLUB: return "♣";
+	        default: return "";
+	    }
+	}
+
+
+	
 	private void winscene(Colour c) {
 		root = new AnchorPane();
 		endscene=new Scene(root,400,400);
@@ -612,6 +366,8 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 		createcomp(winner,0,0,400,400);
 	}
 
+
+	private ArrayList<Marble> selectedMarbles = new ArrayList<>();
 
 	public void handle(ActionEvent e) {
 	    Object src = e.getSource();
@@ -628,12 +384,14 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 
 	    if (src == clear) {
 	        game.deselectAll();
+	        selectedMarbles.clear();
 	        gameengine();
 	        return;
 	    }
 
 	    if (src == endturn) {
 	        Player player = game.getPlayers().get(0);
+
 	        if (player.getHand().isEmpty()) {
 	            game.endPlayerTurn();
 	        } else {
@@ -647,10 +405,17 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 	                return;
 	            }
 	        }
-	        playCpuTurns();
+
+	        try {
+	            playCpuTurns();
+	        } catch (Exception ex) {
+	            errormsg("CPU error: " + ex.getMessage());
+	        }
+
 	        gameengine();
 	        return;
 	    }
+
 
 	    for (int i = 0; i < fulltrack.size(); i++) {
 	        if (src == fulltrack.get(i)) {
@@ -661,8 +426,11 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 	            }
 	            try {
 	                game.getPlayers().get(0).selectMarble(m);
+	                if (!selectedMarbles.contains(m))
+	                    selectedMarbles.add(m);
 	            } catch (InvalidMarbleException ex) {
 	                errormsg(ex.getMessage());
+	                return;
 	            }
 	            gameengine();
 	            return;
@@ -679,28 +447,46 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 	                    try {
 	                        int split = Integer.parseInt(splitdistance.getText());
 	                        game.editSplitDistance(split);
-	                    } catch (Exception ex) {
-	                        errormsg("Please enter a valid number between 1-6 for split distance.");
+	                    } catch (NumberFormatException | SplitOutOfRangeException ex) {
+	                        errormsg("Please enter a valid number between 1 and 6 for split distance.");
 	                        game.deselectAll();
+	                        selectedMarbles.clear();
 	                        return;
 	                    }
 	                }
 
-	                if (!game.canPlayTurn()) {
-	                    errormsg("You cannot play this card now.");
-	                    game.deselectAll();
-	                    return;
+	                if (c instanceof Jack) {
+	                    Jack jack = (Jack) c;
+	                    if (!jack.validateMarbleSize(selectedMarbles)) {
+	                        errormsg("You must select one or two marbles for the Jack card.");
+	                        game.deselectAll();
+	                        selectedMarbles.clear();
+	                        return;
+	                    }
+	                    if (!jack.validateMarbleColours(selectedMarbles)) {
+	                        throw new IllegalSwapException("You must select one of your marbles and one from another player.");
+	                    }
+	                    jack.act(selectedMarbles);
+	                    game.endPlayerTurn();
+	                    playCpuTurns();
+	                } else {
+	                    if (game.canPlayTurn()) {
+	                        game.playPlayerTurn();
+	                        game.endPlayerTurn();
+	                        playCpuTurns();
+	                    } else {
+	                        throw new InvalidCardException("You cannot play this card now.");
+	                    }
 	                }
 
-	                game.playPlayerTurn();
-	                game.endPlayerTurn();
-	                playCpuTurns();
-
-	            } catch (Exception ex) {
+	            } catch (GameException ex) {
 	                errormsg(ex.getMessage());
+	            } finally {
 	                game.deselectAll();
+	                selectedMarbles.clear();
+	                gameengine();
 	            }
-	            gameengine();
+
 	            return;
 	        }
 	    }
@@ -710,18 +496,25 @@ public class GUI extends Application implements EventHandler<ActionEvent>{
 
 
 
+
 	private void playCpuTurns() {
 	    for (int i = 1; i <= 3; i++) {
-	        if (game.canPlayTurn()) {
-	            try {
+	        try {
+	            if (game.canPlayTurn()) {
 	                game.playPlayerTurn();
-	            } catch (GameException ex) {
-	                errormsg(ex.getMessage());
+	            }
+	        } catch (Exception ex) {
+	            errormsg("CPU " + i + " failed to play: " + ex.getMessage());
+	        } finally {
+	            try {
+	                game.endPlayerTurn();
+	            } catch (Exception ex) {
+	                errormsg("Failed to end CPU " + i + "'s turn: " + ex.getMessage());
 	            }
 	        }
-	        game.endPlayerTurn();
 	    }
 	}
+
 
 
 
